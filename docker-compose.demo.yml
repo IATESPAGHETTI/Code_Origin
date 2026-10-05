@@ -1,0 +1,9 @@
+# Mounts the seeded demo repo (python scripts/make_demo_repo.py --out demo-data) into ingest at /demo.
+#   docker compose -f docker-compose.yml -f docker-compose.demo.yml up -d
+#   python scripts/seed_demo.py --container-path /demo
+services:
+  ingest:
+    environment: { ALLOW_LOCAL_REPOS: "1" }
+    volumes: ["./demo-data:/demo:ro"]
+  gateway:
+    environment: { ALLOW_LOCAL_REPOS: "1" }

@@ -1,0 +1,38 @@
+name: Nightly eval
+on:
+  schedule: [{ cron: "17 2 * * *" }]
+  workflow_dispatch:
+permissions: { contents: read }
+
+jobs:
+  mock-regression:
+    # Plumbing regression: dataset valid, pipeline runs, no item errors.
+    # Mock LLM, so the scores are NOT research results.
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11", cache: pip }
+      - run: |
+          for s in gateway ingest rag llm orchestrator eval; do pip install -r services/$s/requirements.txt; done
+          pip install httpx
+      - run: git config --global user.email ci@example.com && git config --global user.name ci
+      - run: python scripts/smoke_local.py
+
+  real-models:
+    # Only runs where a self-hosted GPU runner labelled `gpu` exists (repo variable HAS_GPU_RUNNER=true).
+    if: vars.HAS_GPU_RUNNER == 'true'
+    runs-on: [self-hosted, gpu]
+    timeout-minutes: 600
+    steps:
+      - uses: actions/checkout@v4
+      - run: cp .env.example .env
+      - run: docker compose -f docker-compose.yml -f docker-compose.demo.yml up -d --build
+      - run: python scripts/compose_health.py --timeout 600
+      - run: python scripts/make_demo_repo.py --out demo-data && python scripts/seed_demo.py --container-path /demo
+      - run: python scripts/run_eval.py --split dev --models llama2 --out reports/nightly
+      - uses: actions/upload-artifact@v4
+        with: { name: nightly-eval, path: reports/nightly.* }
+      - if: always()
+        run: docker compose -f docker-compose.yml -f docker-compose.demo.yml down -v

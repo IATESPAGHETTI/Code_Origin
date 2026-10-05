@@ -1,0 +1,107 @@
+name: CI
+on:
+  push: { branches: [main, master] }
+  pull_request:
+concurrency: { group: "ci-${{ github.ref }}", cancel-in-progress: true }
+permissions: { contents: read }
+
+jobs:
+  lint-and-drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11", cache: pip }
+      - run: pip install ruff
+      - run: python -m ruff check services shared scripts
+      - run: python scripts/sync_shared.py --check
+      - run: python scripts/build_demo_dataset.py --check
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: { service: [rag, llm, ingest, orchestrator, eval, gateway] }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11", cache: pip, cache-dependency-path: "services/${{ matrix.service }}/requirements*.txt" }
+      - name: git identity (ingest tests build real repos)
+        run: git config --global user.email ci@example.com && git config --global user.name ci
+      - run: pip install -r services/${{ matrix.service }}/requirements-dev.txt
+      - run: python -m pytest -q --cov=app --cov-report=term-missing
+        working-directory: services/${{ matrix.service }}
+        env: { MOCK_LLM: "1", EMBEDDING_BACKEND: hash, STORE_BACKEND: memory }
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: services/frontend } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm, cache-dependency-path: services/frontend/package-lock.json }
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: gitleaks (secrets in history)
+        uses: gitleaks/gitleaks-action@v2
+        env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
+      - name: trivy (dependencies, IaC, config)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          scanners: vuln,misconfig,secret
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: "1"
+
+  compose-smoke:
+    needs: [test]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: pip install httpx
+      - run: cp .env.example .env
+      - name: "build and start (dev override - mock LLM, hash embedder)"
+        run: |
+          F="-f docker-compose.yml -f docker-compose.dev.yml -f docker-compose.demo.yml"
+          python scripts/make_demo_repo.py --out demo-data
+          docker compose $F up -d --build
+      - run: python scripts/compose_health.py --timeout 300
+      - run: python scripts/seed_demo.py --container-path /demo
+      - name: ask through the UI proxy
+        run: |
+          curl -fsS -X POST localhost:5180/api/ask -H 'content-type: application/json' \
+            -d '{"repo":"local__repo","question":"Why was session-cookie authentication replaced with JWT tokens?","mode":"code_history"}' \
+            | python -c "import sys,json; r=json.load(sys.stdin); assert r['citations'] and not r['refused'], r"
+      - name: logs on failure
+        if: failure()
+        run: docker compose -f docker-compose.yml -f docker-compose.dev.yml logs --tail=200
+      - run: docker compose -f docker-compose.yml -f docker-compose.dev.yml -f docker-compose.demo.yml down -v
+
+  eval-gate:
+    needs: [test]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11", cache: pip }
+      - run: |
+          for s in gateway ingest rag llm orchestrator eval; do pip install -r services/$s/requirements.txt; done
+          pip install httpx
+      - name: git identity
+        run: git config --global user.email ci@example.com && git config --global user.name ci
+      - name: end-to-end smoke + mock evaluation (pipeline plumbing only; says nothing about the research question)
+        run: python scripts/smoke_local.py

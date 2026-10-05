@@ -1,0 +1,175 @@
+# CodeOrigin core stack.
+#   docker compose up -d --build                      # core stack, Ollama on the HOST
+#   docker compose --profile ollama up -d --build     # + containerised Ollama (NVIDIA GPU, reuses host models)
+# Overrides: docker-compose.dev.yml, docker-compose.prod.yml, docker-compose.monitoring.yml (see Makefile).
+#
+# Only the gateway (8200), the web UI (5180) and ChromaDB (8206) are published by default;
+# the other services are reachable only on the internal network (dev override publishes them).
+
+x-python-service: &python-service
+  restart: unless-stopped
+  networks: [codeorigin]
+  security_opt: ["no-new-privileges:true"]
+  cap_drop: [ALL]
+  read_only: true
+  tmpfs: ["/tmp"]
+  logging:
+    driver: json-file
+    options: { max-size: "10m", max-file: "3" }
+
+services:
+  web:
+    build: ./services/frontend
+    image: codeorigin/web:${TAG:-dev}
+    container_name: codeorigin-web
+    restart: unless-stopped
+    networks: [codeorigin]
+    ports: ["${WEB_PORT:-5180}:5180"]
+    depends_on:
+      gateway: { condition: service_healthy }
+
+  gateway:
+    <<: *python-service
+    build: ./services/gateway
+    image: codeorigin/gateway:${TAG:-dev}
+    container_name: codeorigin-gateway
+    ports: ["${GATEWAY_PORT:-8200}:8200"]
+    environment:
+      API_KEY: ${API_KEY:-}
+      GITHUB_WEBHOOK_SECRET: ${GITHUB_WEBHOOK_SECRET:-}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5180,http://127.0.0.1:5180}
+      RATE_LIMIT_ASK_PER_MIN: ${RATE_LIMIT_ASK_PER_MIN:-30}
+      RATE_LIMIT_OTHER_PER_MIN: ${RATE_LIMIT_OTHER_PER_MIN:-240}
+      GIT_SHA: ${GIT_SHA:-unknown}
+    depends_on:
+      ingest: { condition: service_healthy }
+      orchestrator: { condition: service_healthy }
+      eval: { condition: service_healthy }
+
+  ingest:
+    <<: *python-service
+    build: ./services/ingest
+    image: codeorigin/ingest:${TAG:-dev}
+    container_name: codeorigin-ingest
+    environment:
+      DATA_DIR: /data
+      RAG_SERVICE_URL: http://codeorigin-rag:8202
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+      GITHUB_WEBHOOK_SECRET: ${GITHUB_WEBHOOK_SECRET:-}
+      ALLOW_LOCAL_REPOS: ${ALLOW_LOCAL_REPOS:-0}
+      MAX_COMMITS: ${MAX_COMMITS:-2000}
+      MAX_ISSUES: ${MAX_ISSUES:-300}
+      MAX_PRS: ${MAX_PRS:-200}
+    volumes: [ingest-data:/data]
+    depends_on:
+      rag: { condition: service_healthy }
+
+  rag:
+    <<: *python-service
+    build:
+      context: ./services/rag
+      args: { EMBEDDING_BACKEND: "${EMBEDDING_BACKEND:-sentence}" }
+    image: codeorigin/rag:${TAG:-dev}-${EMBEDDING_BACKEND:-sentence}
+    container_name: codeorigin-rag
+    environment:
+      EMBEDDING_BACKEND: ${EMBEDDING_BACKEND:-sentence}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-all-MiniLM-L6-v2}
+      STORE_BACKEND: ${STORE_BACKEND:-chroma}
+      CHROMA_HOST: codeorigin-chromadb
+      CHROMA_PORT: "8000"
+    depends_on:
+      chromadb: { condition: service_healthy }
+
+  llm:
+    <<: *python-service
+    build: ./services/llm
+    image: codeorigin/llm:${TAG:-dev}
+    container_name: codeorigin-llm
+    environment:
+      MOCK_LLM: ${MOCK_LLM:-0}
+      OLLAMA_HOST: ${OLLAMA_HOST:-http://host.docker.internal:11434}
+      LLM_MODEL: ${LLM_MODEL:-llama2}
+      JUDGE_MODEL: ${JUDGE_MODEL:-gemma:2b}
+      OLLAMA_NUM_CTX: ${OLLAMA_NUM_CTX:-0}
+      LLM_TIMEOUT_SECONDS: ${LLM_TIMEOUT_SECONDS:-300}
+    extra_hosts: ["host.docker.internal:host-gateway"]
+
+  orchestrator:
+    <<: *python-service
+    build: ./services/orchestrator
+    image: codeorigin/orchestrator:${TAG:-dev}
+    container_name: codeorigin-orchestrator
+    environment:
+      RAG_SERVICE_URL: http://codeorigin-rag:8202
+      LLM_SERVICE_URL: http://codeorigin-llm:8203
+      LLM_MODEL: ${LLM_MODEL:-llama2}
+      OFF_TOPIC_MIN_RELEVANCE: ${OFF_TOPIC_MIN_RELEVANCE:-0.25}
+      HISTORY_MIN_RELEVANCE: ${HISTORY_MIN_RELEVANCE:-0.30}
+      GROUNDING_MIN_SUPPORT: ${GROUNDING_MIN_SUPPORT:-0.50}
+      CONTEXT_CHAR_BUDGET: ${CONTEXT_CHAR_BUDGET:-6000}
+    depends_on:
+      rag: { condition: service_healthy }
+      llm: { condition: service_healthy }
+
+  eval:
+    <<: *python-service
+    build: ./services/eval
+    image: codeorigin/eval:${TAG:-dev}
+    container_name: codeorigin-eval
+    environment:
+      DATA_DIR: /data
+      ORCHESTRATOR_URL: http://codeorigin-orchestrator:8204
+      LLM_SERVICE_URL: http://codeorigin-llm:8203
+      JUDGE_MODEL: ${JUDGE_MODEL:-gemma:2b}
+    volumes: [eval-data:/data]
+    depends_on:
+      orchestrator: { condition: service_healthy }
+
+  chromadb:
+    image: chromadb/chroma:1.0.0
+    container_name: codeorigin-chromadb
+    restart: unless-stopped
+    networks: [codeorigin]
+    ports: ["${CHROMA_PORT:-8206}:8000"]
+    volumes: [chroma-data:/data]
+    healthcheck:
+      # the image has no python/curl; bash /dev/tcp is what's available
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/localhost/8000' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+  # Optional: containerised Ollama. Off by default so the host Ollama (already holding the
+  # models, already using the GPU) is used. Enable with `--profile ollama` and set
+  # OLLAMA_HOST=http://codeorigin-ollama:11434 in .env. Stop host Ollama first to free the GPU.
+  ollama:
+    profiles: [ollama]
+    image: ollama/ollama:0.5.7
+    container_name: codeorigin-ollama
+    restart: unless-stopped
+    networks: [codeorigin]
+    ports: ["${OLLAMA_PORT:-11435}:11434"]
+    volumes:
+      # reuse the models already downloaded on the host
+      - ${OLLAMA_MODELS_DIR:-~/.ollama}:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - { driver: nvidia, count: all, capabilities: [gpu] }
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 20s
+
+networks:
+  codeorigin:
+    name: codeorigin
+
+volumes:
+  chroma-data:
+  ingest-data:
+  eval-data:

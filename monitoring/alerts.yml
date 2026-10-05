@@ -1,0 +1,18 @@
+groups:
+  - name: codeorigin
+    rules:
+      - alert: GatewayDown
+        expr: up{job="codeorigin-gateway"} == 0
+        for: 1m
+        labels: { severity: critical }
+        annotations: { summary: "CodeOrigin gateway is down" }
+      - alert: HighErrorRate
+        expr: sum(rate(codeorigin_requests_total{status=~"5.."}[5m])) / sum(rate(codeorigin_requests_total[5m])) > 0.05
+        for: 5m
+        labels: { severity: warning }
+        annotations: { summary: "More than 5% of gateway requests are failing" }
+      - alert: SlowAsk
+        expr: histogram_quantile(0.95, sum(rate(codeorigin_request_seconds_bucket{route=~".*ask.*"}[5m])) by (le)) > 60
+        for: 10m
+        labels: { severity: warning }
+        annotations: { summary: "p95 /ask latency above 60s" }

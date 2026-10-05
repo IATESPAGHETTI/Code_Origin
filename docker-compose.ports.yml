@@ -1,0 +1,7 @@
+# Publish internal service ports on localhost (calibration, debugging). Combine with any other file.
+services:
+  ingest: { ports: ["8201:8201"] }
+  rag: { ports: ["8202:8202"] }
+  llm: { ports: ["8203:8203"] }
+  orchestrator: { ports: ["8204:8204"] }
+  eval: { ports: ["8205:8205"] }

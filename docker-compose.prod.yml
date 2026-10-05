@@ -1,0 +1,34 @@
+# Prod override: real embeddings + Chroma, pinned image tags from a registry, resource limits,
+# API key required. Set TAG, API_KEY (and optionally GITHUB_TOKEN) in .env.
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+x-limits: &limits
+  deploy:
+    resources:
+      limits: { cpus: "1.0", memory: 512M }
+
+services:
+  web:
+    image: ghcr.io/${GHCR_OWNER:-your-org}/codeorigin-web:${TAG:?set TAG}
+  gateway:
+    <<: *limits
+    image: ghcr.io/${GHCR_OWNER:-your-org}/codeorigin-gateway:${TAG:?set TAG}
+    environment:
+      API_KEY: ${API_KEY:?API_KEY is required in prod}
+  ingest:
+    <<: *limits
+    image: ghcr.io/${GHCR_OWNER:-your-org}/codeorigin-ingest:${TAG:?set TAG}
+  rag:
+    deploy:
+      resources:
+        limits: { cpus: "2.0", memory: 2G }
+    image: ghcr.io/${GHCR_OWNER:-your-org}/codeorigin-rag:${TAG:?set TAG}
+  llm:
+    <<: *limits
+    image: ghcr.io/${GHCR_OWNER:-your-org}/codeorigin-llm:${TAG:?set TAG}
+    environment: { MOCK_LLM: "0" }
+  orchestrator:
+    <<: *limits
+    image: ghcr.io/${GHCR_OWNER:-your-org}/codeorigin-orchestrator:${TAG:?set TAG}
+  eval:
+    <<: *limits
+    image: ghcr.io/${GHCR_OWNER:-your-org}/codeorigin-eval:${TAG:?set TAG}

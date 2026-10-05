@@ -1,0 +1,69 @@
+{
+ "repo": "pallets/itsdangerous",
+ "candidates": [
+  {
+   "id": "pallets_itsdangerous_pr392",
+   "category": "design_rationale",
+   "question": "What problem motivated the change in PR #392 ('Bump the github-actions group with 2 updates'), and why was it addressed this way?",
+   "expect": "answer",
+   "gold_evidence": [
+    "pr:#392",
+    "commit:0f354a3"
+   ],
+   "gold_answer": "",
+   "key_facts": [],
+   "split": null,
+   "verified": false,
+   "source_url": "https://github.com/pallets/itsdangerous/pull/392",
+   "needs_human": [
+    "gold_answer",
+    "key_facts",
+    "verify gold_evidence",
+    "split"
+   ]
+  },
+  {
+   "id": "pallets_itsdangerous_pr388",
+   "category": "design_rationale",
+   "question": "What problem motivated the change in PR #388 ('Bump actions/checkout from 4.1.4 to 4.1.6 in the github-actions group'), and why was it addressed this way?",
+   "expect": "answer",
+   "gold_evidence": [
+    "pr:#388",
+    "commit:582a23c"
+   ],
+   "gold_answer": "",
+   "key_facts": [],
+   "split": null,
+   "verified": false,
+   "source_url": "https://github.com/pallets/itsdangerous/pull/388",
+   "needs_human": [
+    "gold_answer",
+    "key_facts",
+    "verify gold_evidence",
+    "split"
+   ]
+  },
+  {
+   "id": "pallets_itsdangerous_pr378",
+   "category": "issue_linkage",
+   "question": "Which issue did PR #378 ('support FIPS builds without SHA-1') close, and what was the reason for it?",
+   "expect": "answer",
+   "gold_evidence": [
+    "pr:#378",
+    "issue:#375",
+    "commit:2f69e84"
+   ],
+   "gold_answer": "",
+   "key_facts": [],
+   "split": null,
+   "verified": false,
+   "source_url": "https://github.com/pallets/itsdangerous/pull/378",
+   "needs_human": [
+    "gold_answer",
+    "key_facts",
+    "verify gold_evidence",
+    "split"
+   ]
+  }
+ ]
+}

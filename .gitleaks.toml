@@ -1,0 +1,7 @@
+# Default rules plus an allowlist for the deliberately-leaked fake key in the seeded demo repo.
+[extend]
+useDefault = true
+
+[allowlist]
+description = "demo fixtures contain a fake leaked key on purpose (tests secret redaction)"
+paths = ['''scripts/make_demo_repo\.py''', '''services/.*/tests/.*''']

@@ -1,0 +1,3 @@
+[tool.ruff]
+line-length = 160
+exclude = ["node_modules", "demo-data"]
