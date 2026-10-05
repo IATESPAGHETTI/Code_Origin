@@ -18,4 +18,5 @@ Setup: `make dev` (or `make up` for real models), seed the Ledgerly repo, open h
 6. **Ops** — `make monitoring`: Grafana dashboard (request rate, p95 latency, guardrail triggers, token use) and Loki logs.
 
 ## Presentation mode
-Open http://localhost:5180/present (the "Present" tab) for an 11-slide walkthrough built into the site: problem, research design, architecture, question flow, DevOps, CI, live results, live system health, limits, and a Q&A slide with links to the live demo. Arrow keys or space move between slides, F toggles full screen, Esc exits. The results and health slides pull live data, so start the stack (and run an evaluation, or keep the existing runs) before presenting.
+- **Quick deck** (`/present`, the "Present" tab): 11 slides, one key press each, so it fits a viva. Each slide builds in with a short staggered animation. Arrow keys or space move between slides, F toggles full screen, Esc exits. The results and health slides pull live data, so start the stack (and keep an evaluation run) before presenting.
+- **Scroll story** (`/story`, also linked from the deck): the same content as a scroll-driven page. Scenes pin to the screen and build, draw and light up as you scroll, over a drifting backdrop. It is better for browsing than for presenting because every topic takes two to three screens of scrolling.

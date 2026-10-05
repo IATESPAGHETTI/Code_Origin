@@ -6,6 +6,7 @@ import Repositories from './pages/Repositories.jsx'
 import Ask from './pages/Ask.jsx'
 import Evaluation from './pages/Evaluation.jsx'
 import Present from './pages/Present.jsx'
+import Story from './pages/Story.jsx'
 import GlassBackdrop from './components/GlassBackdrop.jsx'
 
 const NAV = [
@@ -38,6 +39,7 @@ function Health() {
 export default function App() {
   const location = useLocation()
   if (location.pathname === '/present') return <Present />
+  if (location.pathname === '/story') return <Story />
   return (
     <div className="mx-auto max-w-[1760px] px-4 pb-20 sm:px-8 lg:px-14">
       <GlassBackdrop />

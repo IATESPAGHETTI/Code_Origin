@@ -41,7 +41,7 @@ function SlideProblem() {
       <Title eyebrow="The problem" sub="The current code shows what exists. The reason lives in the history around it.">
         Code can&rsquo;t explain itself
       </Title>
-      <div className="panel mb-6"><EvidenceChain /></div>
+      <div className="panel mb-6 overflow-x-auto !px-12"><EvidenceChain /></div>
       <div className="grid gap-4 md:grid-cols-3 text-lg">
         <div className="panel"><b>Ordinary assistants</b><p className="mt-1 muted">See only today&rsquo;s code, so &ldquo;why?&rdquo; becomes a guess.</p></div>
         <div className="panel"><b>CodeOrigin</b><p className="mt-1 muted">Indexes commits, diffs, issues, PRs and reviews, cross-linked, and cites each claim (<code>commit:69e7bbd</code>).</p></div>
@@ -348,10 +348,13 @@ export default function Present() {
         <Link to="/" className="flex items-center gap-2.5" aria-label="Exit presentation">
           <img src="/favicon.svg" alt="" className="h-7 w-7" /><span className="text-lg font-extrabold tracking-tight">CodeOrigin</span>
         </Link>
-        <span className="text-sm muted">{label} &middot; {i + 1} / {SLIDES.length}</span>
+        <span className="flex items-center gap-3">
+          <span className="text-sm muted">{label} &middot; {i + 1} / {SLIDES.length}</span>
+          <Link to="/story" className="btn-ghost !py-1 text-xs">Scroll story</Link>
+        </span>
       </div>
       <main className="min-h-0 flex-1 overflow-y-auto px-8 pb-6 lg:px-20">
-        <div key={i} className="page-enter mx-auto h-full max-w-[1500px]">
+        <div key={i} className="stagger mx-auto h-full max-w-[1500px]">
           <Slide />
         </div>
       </main>
