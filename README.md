@@ -40,7 +40,7 @@ make health
 ```
 Add `-f docker-compose.monitoring.yml` (`make monitoring`) for Prometheus :9090, Grafana :3000, Loki.
 
-Seed the Ledgerly demo repo: `python scripts/make_demo_repo.py --out demo-data`, then (with `docker-compose.demo.yml`) `python scripts/seed_demo.py --container-path /demo`. Git Bash on Windows: prefix with `MSYS_NO_PATHCONV=1`.
+Seed the Ledgerly demo repo: `python scripts/make_demo_repo.py demo-data`, then (with `docker-compose.demo.yml`) `python scripts/seed_demo.py --container-path /demo`. Git Bash on Windows: prefix with `MSYS_NO_PATHCONV=1`.
 
 ## Layout
 ```

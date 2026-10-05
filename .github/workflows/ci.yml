@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: "3.11", cache: pip }
-      - run: pip install ruff
+      - run: pip install ruff==0.15.9
       - run: python -m ruff check services shared scripts
       - run: python scripts/sync_shared.py --check
       - run: python scripts/build_demo_dataset.py --check
@@ -54,7 +54,7 @@ jobs:
         uses: gitleaks/gitleaks-action@v2
         env: { GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}" }
       - name: trivy (dependencies, IaC, config)
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@v0.33.1
         with:
           scan-type: fs
           scan-ref: .
@@ -76,7 +76,7 @@ jobs:
       - name: "build and start (dev override - mock LLM, hash embedder)"
         run: |
           F="-f docker-compose.yml -f docker-compose.dev.yml -f docker-compose.demo.yml"
-          python scripts/make_demo_repo.py --out demo-data
+          python scripts/make_demo_repo.py demo-data
           docker compose $F up -d --build
       - run: python scripts/compose_health.py --timeout 300
       - run: python scripts/seed_demo.py --container-path /demo

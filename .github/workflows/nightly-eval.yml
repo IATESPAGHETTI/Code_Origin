@@ -30,7 +30,7 @@ jobs:
       - run: cp .env.example .env
       - run: docker compose -f docker-compose.yml -f docker-compose.demo.yml up -d --build
       - run: python scripts/compose_health.py --timeout 600
-      - run: python scripts/make_demo_repo.py --out demo-data && python scripts/seed_demo.py --container-path /demo
+      - run: python scripts/make_demo_repo.py demo-data && python scripts/seed_demo.py --container-path /demo
       - run: python scripts/run_eval.py --split dev --models llama2 --out reports/nightly
       - uses: actions/upload-artifact@v4
         with: { name: nightly-eval, path: reports/nightly.* }

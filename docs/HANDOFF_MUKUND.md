@@ -44,7 +44,7 @@ Start the stack (real embeddings + ChromaDB + your Ollama):
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.demo.yml -f docker-compose.ports.yml up -d --build
 python scripts/compose_health.py          # waits until everything is healthy
-MSYS_NO_PATHCONV=1 python scripts/make_demo_repo.py --out demo-data
+MSYS_NO_PATHCONV=1 python scripts/make_demo_repo.py demo-data
 MSYS_NO_PATHCONV=1 python scripts/seed_demo.py --container-path /demo   # indexes the demo repo "Ledgerly"
 ```
 Website: http://localhost:5180 (Ask, Repositories, Evaluation). The first build of the `rag` image downloads PyTorch and the embedding model, so allow about 10 minutes.

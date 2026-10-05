@@ -36,7 +36,7 @@ jobs:
           cache-from: type=gha,scope=${{ matrix.name }}
           cache-to: type=gha,mode=max,scope=${{ matrix.name }}
       - name: trivy image scan (blocks the release on fixable HIGH/CRITICAL)
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@v0.33.1
         with: { image-ref: "scan:${{ matrix.name }}", severity: "HIGH,CRITICAL", ignore-unfixed: true, exit-code: "1" }
       - uses: docker/build-push-action@v6
         with:
