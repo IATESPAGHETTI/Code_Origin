@@ -5,12 +5,14 @@ import Home from './pages/Home.jsx'
 import Repositories from './pages/Repositories.jsx'
 import Ask from './pages/Ask.jsx'
 import Evaluation from './pages/Evaluation.jsx'
+import Present from './pages/Present.jsx'
 import GlassBackdrop from './components/GlassBackdrop.jsx'
 
 const NAV = [
   { to: '/ask', label: 'Ask' },
   { to: '/repos', label: 'Repositories' },
   { to: '/eval', label: 'Evaluation' },
+  { to: '/present', label: 'Present' },
 ]
 
 function Health() {
@@ -35,6 +37,7 @@ function Health() {
 
 export default function App() {
   const location = useLocation()
+  if (location.pathname === '/present') return <Present />
   return (
     <div className="mx-auto max-w-[1760px] px-4 pb-20 sm:px-8 lg:px-14">
       <GlassBackdrop />

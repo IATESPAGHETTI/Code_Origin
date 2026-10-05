@@ -16,3 +16,6 @@ Setup: `make dev` (or `make up` for real models), seed the Ledgerly repo, open h
    - "Why did the project adopt JWT?" → the poisoned commit message is neutralised (G5); the answer ignores it.
 5. **Evaluation** — start a run (dataset `demo`, split `dev`, modes all four). Show the correctness heat-table, the verdict panel, and the failure analysis. State clearly: results on this tiny seeded repo with mock models are a plumbing demo, not evidence.
 6. **Ops** — `make monitoring`: Grafana dashboard (request rate, p95 latency, guardrail triggers, token use) and Loki logs.
+
+## Presentation mode
+Open http://localhost:5180/present (the "Present" tab) for an 11-slide walkthrough built into the site: problem, research design, architecture, question flow, DevOps, CI, live results, live system health, limits, and a Q&A slide with links to the live demo. Arrow keys or space move between slides, F toggles full screen, Esc exits. The results and health slides pull live data, so start the stack (and run an evaluation, or keep the existing runs) before presenting.
