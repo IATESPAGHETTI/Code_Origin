@@ -126,7 +126,7 @@ Environment notes: Windows + Git Bash (set `MSYS_NO_PATHCONV=1` for container pa
 - Run settings (context size, KV-cache type) must be recorded and identical across all modes and models within a result set.
 
 ## 18. GitHub and CI status (2026-10-05)
-- Repository: https://github.com/IATESPAGHETTI/codeorigin (branch `main`). It contains only the CodeOrigin folder, so `.github/workflows` is at the repo root.
+- Repository: https://github.com/IATESPAGHETTI/Code_Origin (branch `main`). It contains only the CodeOrigin folder, so `.github/workflows` is at the repo root.
 - CI (`.github/workflows/ci.yml`) was run on GitHub and is green: lint + drift checks (ruff pinned to 0.15.9), 6 per-service test jobs, frontend lint/test/build, gitleaks, Trivy (HIGH/CRITICAL, fixable only), compose smoke (dev stack, seeded repo, an `/api/ask` with citations), and the end-to-end smoke test.
 - Problems found and fixed by running it for real: wrong Trivy action tag, ruff default rules changing between versions, a wrong `make_demo_repo.py` invocation, a HIGH CVE in `react-router-dom` (now 6.30.6), and frontend Dockerfiles running as root (now non-root).
 - Known quirk: after a force-push, the gitleaks action fails once ("unknown revision") because the push's `before` commit no longer exists. Any normal commit on top fixes it.
