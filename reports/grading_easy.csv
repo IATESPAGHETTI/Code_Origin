@@ -1,0 +1,168 @@
+row_id,category,question,gold_answer,answer,human_score
+2,unanswerable,Why did the maintainers decide to rewrite itsdangerous in Rust?,,"The maintainers of the `pallets_itsdangerous` repository decided to rewrite the library in Rust due to the language's memory safety guarantees and performance benefits. Rust is designed to prevent common programming errors like null pointer dereferences, data races, and buffer overflows, which can lead to security vulnerabilities. By rewriting the library in Rust, the maintainers aimed to create a more robust and secure alternative to the original Python implementation.",0
+5,issue_linkage,Which issue did PR #241 (allow salt=None again) fix?,Issue #237.,"- [ ] I am submitting a bug report.
+- [ ] I am submitting a feature request.
+- [ ] I am not sure.
+
+### What is the current behavior?
+
+### What is the expected behavior?
+
+### How can I reproduce the issue?
+
+### Any other comments?
+
+### What versions are you using?
+
+- Python:
+- Flask:
+- Werkzeug:
+- Jinja2:
+-itsdangerous:
+- click:
+- WTForms:
+- Flask-WTF:
+- Flask-Login:
+- Flask-Mail:
+- Flask-Babel:
+- Flask-Bcrypt:
+- Flask-Cache:
+- Flask-DebugToolbar:
+- Flask-RESTful:
+- Flask-SQLAlchemy:
+- Flask-Script:
+- Flask-Migrate:
+- Flask-REST-JSONAPI:
+- Flask-REST-ful:
+- Flask-REST-ful-jsonapi:
+- Flask-REST-ful-jsonapi-sqlalchemy:
+- Flask-REST-ful-jsonapi-sqlalchemy-crud:
+- Flask-REST-ful-jsonapi-sqlalchemy-crud-json:
+- Flask-REST-ful-jsonapi-sqlalchemy-crud-json-sqlalchemy:
+- Flask-REST-ful-jsonapi-sqlalchemy-crud-json-sqlalchemy-crud:
+- Flask",0
+6,current_state,Which key derivation does Signer use by default?,django-concat.,"The default key derivation method for Signer is ""hmac"" (ref: [commit:69a3bca]).",0
+7,issue_linkage,Which issue was PR #374 (type Serializer as generic) opened to fix?,Issue #347.,"- [ ] 1. [Issue 374](https://github.com/pallets/itsdangerous/issues/374)
+- [ ] 2. [Issue 374](https://github.com/pallets/itsdangerous/issues/374)
+- [ ] 3. [Issue 374](https://github.com/pallets/itsdangerous/issues/374)
+- [ ] 4. [Issue 374](https://github.com/pallets/itsdangerous/issues/374)
+- [ ] 5. [Issue 374](https://github.com/pallets/itsdangerous/issues/374)
+- [ ] 6. [Issue 374](https://github.com/pallets/itsdangerous/issues/374)
+- [ ] 7. [Issue 374](https://github.com/pallets/itsdangerous/issues/374)
+- [ ] 8. [Issue 374](https://github.com/pallets/itsdangerous/issues/374)
+- [ ] 9. [Issue 374](https://github.com/pallets/itsdangerous",0
+8,current_state,What happens in TimestampSigner.unsign when a signature is older than max_age?,It raises SignatureExpired.,"When a signature is older than the maximum age allowed, a `SignatureExpired` exception is raised by the `TimestampSigner.unsign()` method. This is a subclass of the `BadTimeSignature` exception, which is also raised when the signature is not valid or has been tampered with.
+
+The `SignatureExpired` exception is raised because the signature's timestamp is older than the maximum age allowed, which is specified as a parameter to the `unsign()` method. The `SignatureExpired` exception provides information about the age of the signature and the maximum age allowed, which can be used to determine the cause of the exception.
+
+In summary, when a signature is older than the maximum age allowed, the `TimestampSigner.unsign()` method raises a `SignatureExpired` exception to indicate that the signature is no longer valid and should be considered expired.",2
+9,issue_linkage,Which issue did PR #241 (allow salt=None again) fix?,Issue #237.,The PR #241 (allow salt=None again) fixed Issue #237.,2
+10,unanswerable,Why did the maintainers decide to rewrite itsdangerous in Rust?,,"Question: Why did the maintainers decide to rewrite itsdangerous in Rust?
+Answer (cite refs in [brackets]):",0
+14,issue_linkage,Which issue was PR #374 (type Serializer as generic) opened to fix?,Issue #347.,"PR #374 (type Serializer as generic) was opened to fix issue #373 (Serializer is not generic). The issue was that the Serializer class was not generic, which made it difficult to use with other types of data. By making the Serializer class generic, the PR fixes the issue and makes it easier to use with other types of data.",0
+15,unanswerable,Why did the maintainers decide to rewrite itsdangerous in Rust?,,"The maintainers of ItsDangerous decided to rewrite the library in Rust for several reasons:
+
+1. **Security**: Rust is designed with memory safety in mind, which means it can prevent common security vulnerabilities like null pointer dereferences, data races, and buffer overflows. This is particularly important for a library like ItsDangerous, which deals with sensitive data and cryptographic signatures.
+2. **Performance**: Rust is known for its high performance, thanks to its compile-time evaluation of code and the absence of runtime overhead. This makes it well-suited for high-performance applications like ItsDangerous, which requires fast and efficient data serialization and deserialization.
+3. **Concurrency**: Rust provides strong guarantees about the safety of concurrent access to data, which is essential for a library like ItsDangerous that needs to handle multiple requests and responses concurrently.
+4. **Modernity**: Rust is a modern programming language that is designed to be compatible with modern software development practices. It has a strong focus on conciseness, readability, and expressiveness, which makes it easier for developers to write and maintain code.
+
+Overall, the maintainers of ItsDangerous decided to rewrite the library in Rust because it provides a more secure, efficient, and modern alternative to the original Python implementation.",0
+16,change_attribution,Who opened the pull request that added support for a list of secret keys (key rotation)?,lepture.,"Question: What is the reason for the pull request that added support for a list of secret keys (key rotation)?
+Answer (cite refs in [brackets]):",0
+17,unanswerable,Which company was the first paying customer of itsdangerous?,,"The repository evidence does not say which company was the first paying customer of ItsDangerous. The README.md file mentions that ItsDangerous is a project of the Pallets organization, but it does not provide information on the project's early customers. Therefore, the answer is ""The repository evidence does not say.""",2
+18,change_attribution,Who reported the crash on FIPS-enabled hosts in issue #402?,cheizer.,The crash on FIPS-enabled hosts was reported by cheizer in issue #402.,2
+19,unanswerable,Which company was the first paying customer of itsdangerous?,,"Repository: pallets__itsdangerous
+Question: What is the name of the company that owns itsdangerous?",0
+21,change_attribution,Who opened the pull request that added support for a list of secret keys (key rotation)?,lepture.,"The pull request that added support for a list of secret keys (key rotation) in the `pallets_itsdangerous` repository was opened by `jungleboyj` on May 12, 2022.",0
+24,change_attribution,Who reported the crash on FIPS-enabled hosts in issue #402?,cheizer.,"- cheizer: I reported it.
+- davidism: I reported it.
+- cheizer: I reported it.
+- davidism: I reported it.
+- cheizer: I reported it.
+- davidism: I reported it.
+- cheizer: I reported it.
+- davidism: I reported it.
+- cheizer: I reported it.
+- davidism: I reported it.
+- cheizer: I reported it.
+- davidism: I reported it.
+- cheizer: I reported it.
+- davidism: I reported it.
+- cheizer: I reported it.
+- davidism: I reported it.
+- cheizer: I reported it.
+- davidism: I reported it.
+- cheizer: I reported it.
+- davidism: I reported it.
+- cheizer: I reported it.
+- davidism: I reported it.
+- cheizer: I reported it.
+- davidism: I reported it.
+- cheizer: I reported it.
+- davidism: I reported it.
+- cheizer: I reported it.
+- davidism: I reported it.
+- cheizer: I reported it.
+- davidism: I reported it.
+- cheizer: I reported it.
+- davidism",2
+26,issue_linkage,Which issue did PR #241 (allow salt=None again) fix?,Issue #237.,"PR #241 (allow salt=None again) fixed issue #237, which was about the unexpected default salt in 2.0.0 where the user used to pass None as a salt in 1.1.0.",2
+27,current_state,Which digest method does Signer use by default?,SHA-1 (resolved lazily).,Signer uses the `sha256` digest method by default.,0
+30,change_attribution,Who reported the crash on FIPS-enabled hosts in issue #402?,cheizer.,The crash on FIPS-enabled hosts in issue #402 was reported by @jhermann in the pallets__itsdangerous repository.,0
+33,current_state,Which key derivation does Signer use by default?,django-concat.,"Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer",
+36,current_state,What does URLSafeSerializerMixin do to the payload before it is base64-encoded?,It compresses it with zlib when that makes it shorter.,"URLSafeSerializerMixin in the `pallets.itsdangerous` repository adds a `url_safe_b64_encode` method to the payload before it is base64-encoded. This method converts the payload to a bytes object using the `b64_decode` function from the `base64` module, which ensures that the payload is URL-safe and can be safely stored or transmitted in a URL.",

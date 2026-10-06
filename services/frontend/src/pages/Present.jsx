@@ -334,7 +334,7 @@ function SlideFailures() {
     ['Refusal gate does not transfer', 'Unanswerable but on-topic questions ("who was the first paying customer?") passed the relevance gate; codellama invented "Tristan Escalada, 2014". Only llama2 abstained, by itself.', 'Recalibrate G2 on negatives from several repositories.'],
     ['Model ignores or distorts evidence', 'Evidence retrieved (#111, #112) but codellama said 1.1.0 changed the default to HS512 (that was 1.0). starcoder2:3b: 18 of 28 oracle answers hallucinated.', 'Instruction-tuned models; human grading.'],
     ['Models rarely cite the right source', 'Gold evidence cited in only 1-2% of answers; citation validity is high (0.9-1.0) because invented refs are stripped (G3).', 'Stricter answer format; measure with humans.'],
-    ['Automatic scoring is generous', 'Key-fact matching gave full credit to 143 answers; the DeepSeek judge rated 42 of them only partly right or wrong. Agreement kappa 0.75 with DeepSeek (399 answers); on 36 answers GPT 0.94, Gemini 0.69; the judges agree with each other at 0.8-0.86. The small gemma:2b jury gave everyone 100%. Judges are LLMs; the human sheet is still ungraded.', 'Human grading; stricter key facts.'],
+    ['Automatic scoring is generous', 'Key-fact matching gave full credit to 143 answers; the DeepSeek judge rated 42 of them only partly right or wrong. Agreement kappa 0.75 with DeepSeek (399 answers); on 36 answers GPT 0.94, Gemini 0.69; the judges agree with each other at 0.8-0.86. The small gemma:2b jury gave everyone 100%. A hand check of 18 factual rows agreed 18/18; the technical rows are LLM-judged only.', 'Human grading; stricter key facts.'],
   ]
   return (
     <div>
