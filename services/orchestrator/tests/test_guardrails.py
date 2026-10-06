@@ -114,3 +114,17 @@ def test_benign_text_untouched():
 def test_output_redaction():
     out, n = redact('The key was GATEWAY_API_KEY = "pk_live_51HqXzTzabcdefghijklmnop" in config.py')
     assert n == 1 and "pk_live" not in out
+
+
+def test_g3_accepts_the_evidence_wrapper_form_models_copy():
+    from app.guardrails import citations
+    answer = 'Guardrails gate approvals. [evidence ref="doc:guardrails/CLAUDE.md" type="doc"] They also kill runaway agents. <evidence ref=\'commit:abc1234\' type=\'commit\'>'
+    clean, valid, invalid = citations.validate(answer, ["doc:guardrails/CLAUDE.md", "commit:abc1234"])
+    assert valid == ["doc:guardrails/CLAUDE.md", "commit:abc1234"] and invalid == []
+    assert "[doc:guardrails/CLAUDE.md]" in clean and "evidence ref" not in clean
+
+
+def test_g3_still_strips_invented_refs_in_wrapper_form():
+    from app.guardrails import citations
+    clean, valid, invalid = citations.validate('Made up. [evidence ref="commit:deadbee" type="commit"]', ["commit:abc1234"])
+    assert valid == [] and invalid == ["commit:deadbee"] and "deadbee" not in clean

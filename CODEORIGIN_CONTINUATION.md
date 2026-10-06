@@ -132,3 +132,9 @@ Environment notes: Windows + Git Bash (set `MSYS_NO_PATHCONV=1` for container pa
 - Known quirk: after a force-push, the gitleaks action fails once ("unknown revision") because the push's `before` commit no longer exists. Any normal commit on top fixes it.
 - Not yet run: `release.yml` (publishes images to GHCR on a `v*` tag) and the nightly workflow's real-model job (needs a self-hosted GPU runner).
 - Commit identity: commits in this repo use the account's GitHub noreply identity. Do not author commits with a personal email.
+
+## 19. Citation parsing fix and a caveat on earlier numbers (2026-10-06)
+- Found while demoing: `llama2` often copies the evidence wrapper (`[evidence ref="doc:x" type="doc"]`) instead of the bare `[doc:x]` the prompt asks for. G3 did not recognise that form, so such answers counted as having **no citations** and showed raw wrapper text. `app/guardrails/citations.py` now converts the wrapper form to a normal citation; the ref is still validated against what was retrieved and invented refs are still stripped (2 new tests).
+- **Caveat:** the dev-split results in `reports/dev_full_3models.*` and the pilots were produced before this fix. Their citation metrics (`citation_validity`, `gold_cited`) undercount models that cite in the wrapper form, llama2 most of all. Correctness (key-fact matching) is unaffected. Re-run before quoting citation numbers.
+- G4 (lexical grounding) flags padded paraphrase: a sentence that restates a supported bullet with extra words can fall below `GROUNDING_MIN_SUPPORT` (0.50). That is the known limitation of a lexical check that has not been validated against human labels; the threshold was deliberately not tuned to hide it.
+- Demo guidance: for questions about the Nexus repo `codellama:7b` stays closer to the evidence than `llama2`.

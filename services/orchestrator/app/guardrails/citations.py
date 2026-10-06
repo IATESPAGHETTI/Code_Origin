@@ -4,6 +4,11 @@ import re
 
 from ..refs import CITE_RE, normalize_ref
 
+# Small models often copy the evidence wrapper instead of the bare ref, e.g.
+#   [evidence ref="doc:guardrails/CLAUDE.md" type="doc"]   ->   [doc:guardrails/CLAUDE.md]
+# They clearly mean to cite, so accept that form. The ref is still checked against what was retrieved.
+_WRAPPER_CITE = re.compile(r"""[\[<]\s*evidence\s+ref\s*=\s*["']([^"']+)["'][^\]>]*[\]>]""", re.I)
+
 
 def validate(answer: str, allowed_refs):
     """-> (clean_answer, valid_refs, invalid_refs)"""
@@ -22,7 +27,7 @@ def validate(answer: str, allowed_refs):
             invalid.append(ref)
         return ""
 
-    clean = CITE_RE.sub(_sub, answer or "")
+    clean = CITE_RE.sub(_sub, _WRAPPER_CITE.sub(lambda m: f"[{m.group(1).strip()}]", answer or ""))
     clean = re.sub(r"[ \t]{2,}", " ", clean)
     clean = re.sub(r"\s+([.,;:!?])", r"\1", clean).strip()
     return clean, valid, invalid
