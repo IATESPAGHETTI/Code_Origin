@@ -181,25 +181,165 @@ function SlideCI() {
   )
 }
 
-function SlideMonitoring() {
-  const items = [
-    ['Live service metrics', 'Requests per second, p95 latency, 5xx rate, guardrail triggers, LLM tokens and refusals, plus service logs (Loki).'],
-    ['Evaluation results as metrics', 'Correctness per model and mode, history effect with its 95% interval, the pre-registered verdict and the failure taxonomy, for any run.'],
-    ['Quality and cost', 'Hallucination rate (31% / 22% / 59%), retrieval recall (0.14 to 0.70 to 1.00), latency and tokens per model.'],
+const Shot = ({ src, alt, className = '' }) => (
+  <a href={src} target="_blank" rel="noreferrer" title="Open full size" className={`block panel !p-2 ${className}`}>
+    <img src={src} alt={alt} className="w-full rounded" />
+  </a>
+)
+
+const Bullets = ({ items }) => (
+  <ul className="list-disc space-y-2 pl-6 text-xl">{items.map((t) => <li key={t}>{t}</li>)}</ul>
+)
+
+function SlideRuns() {
+  const stats = [['22', 'workflow runs so far'], ['14', 'CI runs passed'], ['1', 'failed (a lint error, fixed in the next commit)'], ['6', 'cancelled: superseded by a newer push'], ['3.1 min', 'median CI run, 11 jobs'], ['1', 'nightly evaluation run, passed']]
+  return (
+    <div>
+      <Title eyebrow="CI and CD" sub="Both are automatic pipelines on GitHub Actions. CI checks every change; CD ships a release.">
+        What CI and CD runs are, and what they did
+      </Title>
+      <div className="grid gap-6 lg:grid-cols-2">
+        <div className="space-y-4">
+          <div className="panel"><div className="text-xl font-semibold" style={{ color: 'var(--accent)' }}>CI: continuous integration</div>
+            <p className="mt-1 text-lg">On every push GitHub starts a run that builds the project and runs all checks without anyone clicking: lint and drift checks, 6 test jobs, frontend build, secret and vulnerability scan, a compose smoke test and an end-to-end evaluation gate. A red run means the change broke something.</p></div>
+          <div className="panel"><div className="text-xl font-semibold" style={{ color: 'var(--accent)' }}>CD: continuous delivery</div>
+            <p className="mt-1 text-lg">When a version tag (v*) is pushed, the release workflow builds the 7 container images, scans them and publishes them to GHCR, then cuts a GitHub release. <b>It is configured but has not run yet: no tag has been pushed, so nothing was published.</b></p></div>
+          <div className="panel"><div className="text-xl font-semibold" style={{ color: 'var(--accent)' }}>Problems the runs caught</div>
+            <p className="mt-1 text-lg">A HIGH vulnerability in a frontend dependency, Dockerfiles running as root, a linter version drift, a wrong script argument in the smoke test, a wrong scanner version, and (today) two lint errors in a new script.</p></div>
+        </div>
+        <div className="grid grid-cols-2 gap-4 content-start">
+          {stats.map(([n, t]) => (
+            <div key={t} className="panel"><div className="text-4xl font-semibold" style={{ color: 'var(--accent)' }}>{n}</div><p className="mt-1 text-base muted">{t}</p></div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function SlidePrometheus() {
+  const flow = [['Gateway /metrics', 'requests, latency, guardrails, tokens, refusals; scraped every 15 s'], ['Eval service /metrics', 'evaluation scores computed from stored runs; scraped every 30 s'], ['Prometheus :9090', 'stores the time series for 15 days and evaluates alert rules'], ['Grafana :3000', 'queries Prometheus (and Loki for logs) and draws the dashboard']]
+  return (
+    <div>
+      <Title eyebrow="Prometheus" sub="Prometheus is the metrics database behind the dashboard: it collects numbers from our services on a schedule and keeps them.">
+        What Prometheus was used for
+      </Title>
+      <div className="grid gap-4 md:grid-cols-4">
+        {flow.map(([t, d], i) => (
+          <div key={t} className="panel" style={i === 2 ? { boxShadow: 'inset 0 0 0 2px var(--accent)' } : undefined}>
+            <div className="text-xl font-semibold">{t}</div><p className="mt-1 text-base muted">{d}</p>
+          </div>
+        ))}
+      </div>
+      <div className="mt-5 grid gap-4 md:grid-cols-2 text-lg">
+        <div className="panel"><b>16 metric families collected</b>
+          <ul className="mt-2 list-disc space-y-1 pl-5 muted">
+            <li>Gateway (5): requests by route and status, request-time histogram, guardrail triggers (G1 to G10), LLM tokens in and out, refusals by type.</li>
+            <li>Evaluation (11): correctness (per category and overall, with CI), history effect, verdict, failure taxonomy, jury score, run progress, quality metrics (hallucination, retrieval, grounding, refusals), latency, tokens.</li>
+          </ul></div>
+        <div className="panel"><b>3 alert rules (all healthy, none firing)</b>
+          <ul className="mt-2 list-disc space-y-1 pl-5 muted">
+            <li>GatewayDown: the gateway is unreachable for 1 minute.</li>
+            <li>HighErrorRate: more than 5% of gateway requests fail (5xx) over 5 minutes.</li>
+            <li>SlowAsk: p95 of /ask latency above 60 s for 10 minutes.</li>
+          </ul></div>
+      </div>
+    </div>
+  )
+}
+
+function SlideFindings() {
+  const cols = [
+    ['Evaluation results (run #8)', [
+      'Correctness rises no_context to code_only to code_history: llama2 20 / 54 / 82%, codellama 13 / 49 / 68%. starcoder2 14 / 29 / 24%.',
+      'History effect: llama2 +0.319, codellama +0.278, starcoder2 -0.021. Verdict: history is useful for the two 7B models, inconclusive for starcoder2.',
+      'Retrieval misses dominate code_only (llama2 11, codellama 10, starcoder2 16 of 35) and fall to 3, 2 and 6 with history. starcoder2 still hallucinates (10 answers).',
+      'The gemma:2b jury scored about 100% for every model: too lenient, not used.',
+    ]],
+    ['Quality, retrieval and cost', [
+      'Hallucination rate: llama2 31%, codellama 22%, starcoder2 59%.',
+      'Evidence recall 0.14 (code only), 0.70 (with history), 1.00 (oracle); precision 0.05, 0.25, 1.00.',
+      'Mean latency with history: 12.0 s, 14.5 s, 2.3 s. Mean tokens written: 126, 173, 147.',
+      'Refusal correctness: 0.83 with no context, 0.89 to 1.00 with retrieval (llama2 1.00 with history).',
+    ]],
+    ['Live service metrics (demo traffic)', [
+      '5 of 5 /api/ask requests succeeded; no 5xx errors.',
+      'p95 /ask latency about 26 s on the 6 GB GPU.',
+      '3 generated answers used 6,635 input and 554 output tokens.',
+      'Guardrails fired: G1 (off-topic), G10 (unsafe request), G4 (grounding flag); refusals: off_topic and unsafe_request.',
+      'No alert firing; 3 alert rules healthy.',
+    ]],
   ]
   return (
     <div>
-      <Title eyebrow="Observability" sub="Prometheus scrapes the gateway and the evaluation service every 30 seconds; Grafana shows them live, with no login.">
-        Monitoring with Prometheus and Grafana
+      <Title eyebrow="Grafana" sub="Everything the dashboard showed, with the numbers. Live figures come from a handful of demo questions, not a load test.">
+        What the Grafana dashboards showed
       </Title>
-      <div className="grid gap-6 lg:grid-cols-[1fr_1.5fr]">
-        <div className="space-y-4">
-          {items.map(([t, d]) => (
-            <div key={t} className="panel"><div className="text-xl font-semibold" style={{ color: 'var(--accent)' }}>{t}</div><p className="mt-1 text-lg">{d}</p></div>
-          ))}
-          <a className="btn-primary inline-flex" href="http://localhost:3000" target="_blank" rel="noreferrer">Open Grafana</a>
-        </div>
-        <div className="panel !p-2"><img src="/img/grafana_quality_cost.jpg" alt="Grafana panels: hallucination rate, retrieval quality, latency, tokens per answer" className="w-full rounded" /></div>
+      <div className="grid gap-4 lg:grid-cols-3">
+        {cols.map(([t, items]) => (
+          <div key={t} className="panel"><div className="text-xl font-semibold" style={{ color: 'var(--accent)' }}>{t}</div>
+            <ul className="mt-2 list-disc space-y-2 pl-5 text-base">{items.map((x) => <li key={x}>{x}</li>)}</ul></div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function SlideGrafanaEval() {
+  return (
+    <div>
+      <Title eyebrow="Grafana 1 of 4" sub="Run #8, the held-out run on pallets/itsdangerous. Click an image to open it full size.">
+        Evaluation results in Grafana
+      </Title>
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Shot src="/img/grafana_eval_overall.jpg" alt="Overall correctness by model and mode" />
+        <Shot src="/img/grafana_eval_effect.jpg" alt="History effect per model" />
+      </div>
+      <p className="mt-4 text-lg muted">Left: correctness per mode (llama2 20 / 54 / 82%, codellama 13 / 49 / 68%, starcoder2 14 / 29 / 24% for no context, code only, code + history; the oracle bars are the ceiling). Right: the history effect, +0.319 and +0.278 for the 7B models and -0.021 for starcoder2.</p>
+    </div>
+  )
+}
+
+function SlideGrafanaQuality() {
+  return (
+    <div>
+      <Title eyebrow="Grafana 2 of 4" sub="Hallucination, retrieval quality and latency per model.">
+        Quality, retrieval and cost
+      </Title>
+      <Shot src="/img/grafana_quality_row1.jpg" alt="Hallucination rate, retrieval quality by mode, mean response latency" />
+      <p className="mt-4 text-lg muted">Hallucination: llama2 31.2%, codellama 21.9%, starcoder2 59.4%. Retrieval: recall rises from 14% (code only) to 70% (code + history) to 100% (oracle). Latency: starcoder2 is fastest (2.3 s) but least reliable; the 7B models take 12 to 16 s.</p>
+    </div>
+  )
+}
+
+function SlideGrafanaTokens() {
+  return (
+    <div>
+      <Title eyebrow="Grafana 3 of 4" sub="Output length, grounding and refusal behaviour per model.">
+        Tokens, grounding and refusals
+      </Title>
+      <Shot src="/img/grafana_quality_row2.jpg" alt="Mean tokens per answer, unsupported-sentence ratio, refusal correctness by mode" />
+      <p className="mt-4 text-lg muted">Tokens written: 126 (llama2), 173 (codellama), 147 (starcoder2). Unsupported-sentence ratio: 27.1%, 26.1%, 36.7%. Refusal correctness is lowest with no context (the model answers questions it should refuse) and highest with retrieval.</p>
+    </div>
+  )
+}
+
+function SlideGrafanaLive() {
+  return (
+    <div>
+      <Title eyebrow="Grafana 4 of 4" sub="Live service panels while five real questions were asked through the Ask API.">
+        Live service metrics
+      </Title>
+      <div className="grid gap-4 lg:grid-cols-[1.7fr_1fr]">
+        <Shot src="/img/grafana_live.jpg" alt="p95 latency by route, guardrail triggers, LLM tokens, refusals by type" />
+        <div className="panel text-lg"><b>What it shows</b>
+          <ul className="mt-2 list-disc space-y-2 pl-5 text-base muted">
+            <li>p95 latency of /api/ask about 26 s; health and config routes in milliseconds.</li>
+            <li>Guardrails fired: G4 (grounding flag), G1 (off-topic refusal), G10 (unsafe request refused).</li>
+            <li>LLM tokens: 6,635 in, 554 out for 3 answers.</li>
+            <li>Refusals by type: off_topic, unsafe_request.</li>
+            <li>5xx rate: no data (no server errors).</li>
+          </ul></div>
       </div>
     </div>
   )
@@ -432,7 +572,7 @@ function SlideEnd() {
 
 const SLIDES = [
   ['Title', SlideTitle], ['Problem', SlideProblem], ['Research design', SlideResearch], ['Methodology', SlideMethod],
-  ['Architecture', SlideArchitecture], ['Question flow', SlideFlow], ['DevOps', SlideDevOps], ['CI/CD', SlideCI], ['Monitoring', SlideMonitoring],
+  ['Architecture', SlideArchitecture], ['Question flow', SlideFlow], ['DevOps', SlideDevOps], ['CI/CD', SlideCI], ['CI/CD runs', SlideRuns], ['Prometheus', SlidePrometheus], ['Grafana findings', SlideFindings], ['Grafana: evaluation', SlideGrafanaEval], ['Grafana: quality', SlideGrafanaQuality], ['Grafana: tokens', SlideGrafanaTokens], ['Grafana: live', SlideGrafanaLive],
   ['Results', SlideResults], ['Interpretation', SlideInterpretation], ['Which model?', SlideTasks], ['Failure analysis', SlideFailures],
   ['Live system', SlideHealth], ['Questions', SlideEnd],
 ]

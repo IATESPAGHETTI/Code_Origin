@@ -180,7 +180,7 @@
     {
       "id": 7,
       "type": "logs",
-      "title": "Service logs",
+      "title": "Service logs (application requests only; health checks and metric scrapes hidden)",
       "datasource": {
         "type": "loki",
         "uid": "loki"
@@ -194,7 +194,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "{container=~\"codeorigin-.*\"}"
+          "expr": "{container=~\"codeorigin-(gateway|ingest|rag|llm|orchestrator|eval)\"} != \"/health\" != \"/metrics\""
         }
       ]
     },
