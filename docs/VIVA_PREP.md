@@ -57,6 +57,13 @@ Code shows *what* exists; the reason it exists is in the history around it (comm
 
 **What does "reproducible" mean here?** One command brings up the stack; settings, model digests and dataset hash are recorded (`docs/EVALUATION.md` section 8); results are stored and browsable; deterministic demo repository so SHAs and gold labels do not drift.
 
+## Which model is best for what? (see docs/EVALUATION.md section 5c)
+- **Explanation, bug analysis, dependency links (issue/PR/commit relations):** llama2 and codellama:7b tie (differences under 0.10 on 4-10 questions each); starcoder2:3b is far behind (0.15-0.50).
+- **Code retrieval (lookups in current code):** codellama:7b best (1.00 vs llama2 0.75), only 4 questions.
+- **RAG overall:** llama2 and codellama tie on accuracy (0.77 vs 0.74 on answerable questions); llama2 is about twice as fast (8.3 s vs 16.1 s median), codellama hallucinated less (20% vs 29%).
+- **Code generation, refactoring, test-pass rate:** not evaluated; the system answers questions, it does not write code. Say so plainly; do not invent numbers.
+- **Metrics measured:** correctness, hallucination rate, retrieval recall/precision, latency, tokens; relevance is not scored separately.
+
 ## Honest answers to hard questions
 - *"Does history really help?"* On this dataset, for capable models, yes and by a large margin; but the repository is fictional and the sample small, so we claim it is promising, not proven.
 - *"Isn't the test biased towards history?"* On the demo repository, yes, by construction. That is why we ran a held-out test on a real repository whose history we did not write. Some bias remains because we drafted the questions from its threads (script-checked, one independent review found 2 weak items out of 35; we did not edit them and report results with and without).

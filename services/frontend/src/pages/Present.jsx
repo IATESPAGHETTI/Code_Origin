@@ -327,6 +327,42 @@ function SlideInterpretation() {
   )
 }
 
+function SlideTasks() {
+  const rows = [
+    ['Explanation (why was it built this way)', '10', '0.75 (0.50)', '0.70 (0.45)', '0.15 (0.25)', 'llama2 = codellama (tie)'],
+    ['Bug analysis', '6', '0.69 (0.58)', '0.61 (0.58)', '0.17 (0.00)', 'tie of the 7B models'],
+    ['Dependency understanding (issue / PR / commit links)', '4', '1.00 (1.00)', '1.00 (1.00)', '0.50 (0.25)', 'tie of the 7B models'],
+    ['Code retrieval (look up a fact in current code)', '4', '0.75 (0.38)', '1.00 (0.88)', '0.25 (0.25)', 'codellama:7b'],
+    ['RAG, whole pipeline (no ctx / code only / code + history)', '28', '0.21 / 0.50 / 0.77', '0.12 / 0.50 / 0.74', '0.14 / 0.25 / 0.20', 'llama2 = codellama'],
+    ['Code generation', '-', 'not evaluated', 'not evaluated', 'not evaluated', '-'],
+    ['Refactoring', '-', 'not evaluated', 'not evaluated', 'not evaluated', '-'],
+  ]
+  const head = ['Task', 'n', 'llama2', 'codellama:7b', 'starcoder2:3b', 'Best']
+  return (
+    <div>
+      <Title eyebrow="Which model for which task" sub="Correctness in the RAG mode (code_history): automatic score, then the DeepSeek judge in brackets. Under 0.10 apart counts as a tie.">
+        Which model is best for what?
+      </Title>
+      <div className="panel overflow-x-auto !p-0">
+        <table className="w-full text-left text-lg">
+          <thead><tr className="muted text-base">{head.map((h) => <th key={h} className="px-4 py-3 font-medium">{h}</th>)}</tr></thead>
+          <tbody>
+            {rows.map((r, i) => (
+              <tr key={i} className="border-t" style={{ borderColor: 'var(--line)', opacity: r[2] === 'not evaluated' ? 0.55 : 1 }}>
+                {r.map((c, k) => <td key={k} className={`px-4 py-2.5 ${k === 5 && c !== '-' ? 'font-semibold' : ''}`} style={k === 5 && c !== '-' ? { color: '#047857' } : undefined}>{c}</td>)}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="mt-5 grid gap-4 text-lg md:grid-cols-2">
+        <div className="panel"><b>Cost and reliability</b><p className="mt-1 text-base muted">Hallucination rate: llama2 29%, codellama 20%, starcoder2 54%. Median latency 8.3 s, 16.1 s, 1.4 s. The 7B models tie on accuracy; llama2 is twice as fast, codellama hallucinates less.</p></div>
+        <div className="panel"><b>Not evaluated</b><p className="mt-1 text-base muted">Code generation, refactoring and a test-pass rate: the system answers questions and does not write code. Relevance is not scored separately.</p></div>
+      </div>
+    </div>
+  )
+}
+
 function SlideFailures() {
   const items = [
     ['Retrieval misses unusual phrasing', '"Why was 1.0.0 removed from PyPI?" fetched unrelated issues (#92, #47); recall 0.70 not 1.00 on the real repo. Both 7B models then invented a reason, and code_only happened to score better, so the evolution category (n=2) regresses with history.', 'Query rewriting / commit-aware retrieval (not done).'],
@@ -373,7 +409,7 @@ function SlideEnd() {
 const SLIDES = [
   ['Title', SlideTitle], ['Problem', SlideProblem], ['Research design', SlideResearch], ['Methodology', SlideMethod],
   ['Architecture', SlideArchitecture], ['Question flow', SlideFlow], ['DevOps', SlideDevOps], ['CI/CD', SlideCI],
-  ['Results', SlideResults], ['Interpretation', SlideInterpretation], ['Failure analysis', SlideFailures],
+  ['Results', SlideResults], ['Interpretation', SlideInterpretation], ['Which model?', SlideTasks], ['Failure analysis', SlideFailures],
   ['Live system', SlideHealth], ['Questions', SlideEnd],
 ]
 

@@ -117,6 +117,35 @@ Control category (n = 4): `code_history` minus `code_only` = 0.00 for llama2 and
 
 **Two small notes on scoring.** codellama's answer to it30 begins "the budget was not explicitly mentioned" and then speculates; the automatic score is 0, but a human may judge it differently. This is exactly why human grading is needed (`reports/grading_itsdangerous.csv`, 36 blind rows, not yet graded).
 
+## 5c. Which model is best for which task? (held-out run #8, `scripts/task_analysis.py`)
+The assignment-style question "which model is best for X" is answered below for the tasks this project can measure. Each task is mapped to a question category of the real-repository dataset; numbers are mean correctness in the RAG mode (`code_history`), automatic score first and the DeepSeek judge in brackets. With 2-10 questions per task, a gap under 0.10 is called a tie.
+
+| Task (question category) | n | llama2 | codellama:7b | starcoder2:3b | Best |
+|---|---|---|---|---|---|
+| Explanation: why was it built this way (design_rationale) | 10 | 0.75 (0.50) | 0.70 (0.45) | 0.15 (0.25) | llama2 and codellama tie; starcoder2 far behind |
+| Bug analysis (bug_origin) | 6 | 0.69 (0.58) | 0.61 (0.58) | 0.17 (0.00) | tie between the 7B models |
+| Dependency understanding: which issue a PR fixed, links between issues, PRs and commits (issue_linkage) | 4 | 1.00 (1.00) | 1.00 (1.00) | 0.50 (0.25) | tie between the 7B models |
+| Code retrieval: look up a fact in the current code (current_state) | 4 | 0.75 (0.38) | 1.00 (0.88) | 0.25 (0.25) | **codellama:7b** |
+| RAG, whole pipeline (all 28 answerable questions): `no_context` / `code_only` / `code_history` | 28 | 0.21 / 0.50 / **0.77** | 0.12 / 0.50 / **0.74** | 0.14 / 0.25 / 0.20 | llama2 and codellama tie on accuracy; see cost below |
+| Code generation | - | not evaluated | not evaluated | not evaluated | - |
+| Refactoring | - | not evaluated | not evaluated | not evaluated | - |
+
+**Not evaluated, and why.** CodeOrigin answers questions about a repository and its history; it does not generate or modify code, so the dataset has no code-generation or refactoring tasks and there is no code test-pass rate. These would need a different dataset (tasks with unit tests that the generated code must pass) and are listed as future work rather than guessed at.
+
+**Metrics covered (`code_history`, all 35 questions pooled).**
+| Metric | llama2 | codellama:7b | starcoder2:3b |
+|---|---|---|---|
+| Accuracy / correctness (answerable questions) | 0.77 | 0.74 | 0.20 |
+| Hallucination rate (answers with at least half the sentences unsupported by the evidence) | 29% | 20% | 54% |
+| Unsupported-sentence ratio (mean) | 0.27 | 0.26 | 0.37 |
+| Median response latency | 8.3 s | 16.1 s | 1.4 s |
+| Tokens in / out (median) | 2217 / 90 | 2217 / 193 | 1893 / 44 |
+| Relevance | not measured separately | not measured separately | not measured separately |
+
+Retrieval quality is a property of the retriever, not of the model, so it is identical for all three: evidence recall / precision 0.14 / 0.05 (`code_only`), 0.70 / 0.25 (`code_history`), 1.00 / 1.00 (`oracle`). Resource consumption was not profiled per model beyond latency and token counts (all runs on one 6 GB GPU); "relevance" is not scored separately from correctness.
+
+**Reading it.** (1) For every task that history can help (explanation, bug analysis, dependency links), llama2 and codellama:7b are indistinguishable at this sample size and starcoder2:3b is clearly worse. (2) The only task with a clear winner is current-code lookup, where codellama:7b is ahead (4 questions, so weak evidence). (3) The practical difference between the two 7B models is cost, not accuracy: llama2 answers in about half the time (8.3 s vs 16.1 s) and writes shorter answers, while codellama hallucinated less (20% vs 29%) and was better at code lookup. (4) starcoder2:3b is the fastest (1.4 s) but hallucinated in 54% of answers, so speed does not compensate.
+
 ## 6. Interpretation
 0. **The headline result now holds on a real repository.** On independent history (run #8), both 7B models pass the pre-registered rule: +0.32 and +0.28 correctness on 24 history questions, intervals excluding 0; the control category (4 questions) shows no loss by the automatic score but a possible drop by an LLM judge, so "no loss" is not claimed. The effect is smaller than on the demo repository (+0.42), as expected when the history is written by strangers and retrieval is harder (recall 0.70 not 1.00). The small model shows no effect on either repository. The remaining weaknesses are retrieval of vague or unusual phrasings and refusal of unanswerable questions about a real repository.
 1. **Where history helps.** For both 7B models, adding history raises correctness on history questions from roughly 0.5 to roughly 0.9, with no measured loss on the control question by the automatic score (a judge disagrees, see section 5b). The mechanism is visible in the diagnostics: `code_only` does not retrieve the history that holds the answer (recall 0.19), `code_history` does (1.00), and with the gold evidence handed over directly (`oracle`, answerable questions, n = 16) `llama2` scores 100% and `codellama:7b` 88%, so for these models the bottleneck is retrieval, not reasoning.
