@@ -63,7 +63,7 @@ export function recommendations(rep) {
   add('honest', 'Fewest unsupported claims (most trustworthy)', hist,
     models.map((m) => ({ model: m, v: tot(m, 'unsupported_ratio') })), 'low', pct)
   add('cite', 'Cites the real evidence', hist,
-    models.map((m) => ({ model: m, v: tot(m, 'gold_cited') })), 'high', pct, 'Share of answers that cite the gold evidence. Runs made before 2026-10-06 undercount models that copy the evidence tag (llama2), so re-run before relying on this line.')
+    models.map((m) => ({ model: m, v: tot(m, 'gold_cited') })), 'high', pct, 'Share of answers that cite the gold evidence. Most models rarely cite in the requested format; this is a real weakness, not a counting artefact.')
 
   // fastest, but only among models that are accurate enough: a fast wrong answer is not a recommendation
   const hv = models.map((m) => ({ model: m, v: pooled(rep, m, hist, 'history', 'correctness') }))

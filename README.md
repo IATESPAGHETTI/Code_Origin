@@ -13,7 +13,7 @@ Browser ─► web :5180 ─► gateway :8200 ─┬─► ingest :8201 ─► g
                                        │                     └─► llm :8203 ─► Ollama
                                        └─► eval :8205 ─► orchestrator / llm (jury)
 ```
-Details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · guardrails G1–G10: [docs/GUARDRAILS.md](docs/GUARDRAILS.md) · demo: [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) · ops: [docs/OPERATIONS.md](docs/OPERATIONS.md) · own-repo experiment: [docs/OWN_REPO_TEST.md](docs/OWN_REPO_TEST.md) · hand-off: [docs/HANDOFF_MUKUND.md](docs/HANDOFF_MUKUND.md) · status: [CODEORIGIN_CONTINUATION.md](CODEORIGIN_CONTINUATION.md)
+Details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · guardrails G1–G10: [docs/GUARDRAILS.md](docs/GUARDRAILS.md) · demo: [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) · ops: [docs/OPERATIONS.md](docs/OPERATIONS.md) · evaluation (method, results, limits): [docs/EVALUATION.md](docs/EVALUATION.md) · viva prep: [docs/VIVA_PREP.md](docs/VIVA_PREP.md) · own-repo experiment: [docs/OWN_REPO_TEST.md](docs/OWN_REPO_TEST.md) · hand-off: [docs/HANDOFF_MUKUND.md](docs/HANDOFF_MUKUND.md) · status: [CODEORIGIN_CONTINUATION.md](CODEORIGIN_CONTINUATION.md)
 
 ## Quick start
 
