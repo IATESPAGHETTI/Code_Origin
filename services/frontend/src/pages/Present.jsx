@@ -143,7 +143,7 @@ function SlideDevOps() {
     ['CI', 'Lint, drift checks, 6 test jobs, frontend build, compose smoke test, end-to-end eval gate'],
     ['Security', 'gitleaks secret scan and Trivy dependency/Dockerfile scan on every push; secrets only in .env'],
     ['CD', 'Tag v* builds, scans and publishes every image to GHCR, then cuts a release'],
-    ['Monitoring', 'Prometheus + Grafana + Loki, with alert rules and evaluation scores as metrics'],
+    ['Monitoring', 'Prometheus + Grafana + Loki run with the demo: live service metrics, alert rules, and the evaluation scores, hallucination rate, retrieval quality, latency and tokens as dashboards'],
   ]
   return (
     <div>
@@ -177,6 +177,30 @@ function SlideCI() {
         <b>Running it for real found real problems:</b> a HIGH vulnerability in a frontend dependency (fixed), Dockerfiles running as root (fixed), a tool-version drift in the linter (pinned), and a wrong script call in the smoke test (fixed).
       </div>
       <a className="btn-primary mt-6 inline-flex" href="https://github.com/IATESPAGHETTI/Code_Origin/actions" target="_blank" rel="noreferrer">Open the Actions page</a>
+    </div>
+  )
+}
+
+function SlideMonitoring() {
+  const items = [
+    ['Live service metrics', 'Requests per second, p95 latency, 5xx rate, guardrail triggers, LLM tokens and refusals, plus service logs (Loki).'],
+    ['Evaluation results as metrics', 'Correctness per model and mode, history effect with its 95% interval, the pre-registered verdict and the failure taxonomy, for any run.'],
+    ['Quality and cost', 'Hallucination rate (31% / 22% / 59%), retrieval recall (0.14 to 0.70 to 1.00), latency and tokens per model.'],
+  ]
+  return (
+    <div>
+      <Title eyebrow="Observability" sub="Prometheus scrapes the gateway and the evaluation service every 30 seconds; Grafana shows them live, with no login.">
+        Monitoring with Prometheus and Grafana
+      </Title>
+      <div className="grid gap-6 lg:grid-cols-[1fr_1.5fr]">
+        <div className="space-y-4">
+          {items.map(([t, d]) => (
+            <div key={t} className="panel"><div className="text-xl font-semibold" style={{ color: 'var(--accent)' }}>{t}</div><p className="mt-1 text-lg">{d}</p></div>
+          ))}
+          <a className="btn-primary inline-flex" href="http://localhost:3000" target="_blank" rel="noreferrer">Open Grafana</a>
+        </div>
+        <div className="panel !p-2"><img src="/img/grafana_quality_cost.jpg" alt="Grafana panels: hallucination rate, retrieval quality, latency, tokens per answer" className="w-full rounded" /></div>
+      </div>
     </div>
   )
 }
@@ -356,7 +380,7 @@ function SlideTasks() {
         </table>
       </div>
       <div className="mt-5 grid gap-4 text-lg md:grid-cols-2">
-        <div className="panel"><b>Cost and reliability</b><p className="mt-1 text-base muted">Hallucination rate: llama2 29%, codellama 20%, starcoder2 54%. Median latency 8.3 s, 16.1 s, 1.4 s. The 7B models tie on accuracy; llama2 is twice as fast, codellama hallucinates less.</p></div>
+        <div className="panel"><b>Cost and reliability</b><p className="mt-1 text-base muted">Hallucination rate: llama2 31%, codellama 22%, starcoder2 59%. Median latency 8.3 s, 16.1 s, 1.4 s (means 12.0, 14.5, 2.3). The 7B models tie on accuracy; llama2 is faster at the median, codellama hallucinates less. Live in Grafana.</p></div>
         <div className="panel"><b>Not evaluated</b><p className="mt-1 text-base muted">Code generation, refactoring and a test-pass rate: the system answers questions and does not write code. Relevance is not scored separately.</p></div>
       </div>
     </div>
@@ -408,7 +432,7 @@ function SlideEnd() {
 
 const SLIDES = [
   ['Title', SlideTitle], ['Problem', SlideProblem], ['Research design', SlideResearch], ['Methodology', SlideMethod],
-  ['Architecture', SlideArchitecture], ['Question flow', SlideFlow], ['DevOps', SlideDevOps], ['CI/CD', SlideCI],
+  ['Architecture', SlideArchitecture], ['Question flow', SlideFlow], ['DevOps', SlideDevOps], ['CI/CD', SlideCI], ['Monitoring', SlideMonitoring],
   ['Results', SlideResults], ['Interpretation', SlideInterpretation], ['Which model?', SlideTasks], ['Failure analysis', SlideFailures],
   ['Live system', SlideHealth], ['Questions', SlideEnd],
 ]

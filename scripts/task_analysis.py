@@ -55,24 +55,28 @@ def main():
             vals[m] = (auto, jd)
             cells.append(f"{m} {auto:.2f}" + (f"|{jd:.2f}" if judge else ""))
         n = len(pick(models[0], a.mode, cats))
-        best = max(vals, key=lambda k: vals[k][0]); gap = vals[best][0] - sorted(v[0] for v in vals.values())[-2]
+        best = max(vals, key=lambda k: vals[k][0])
+        gap = vals[best][0] - sorted(v[0] for v in vals.values())[-2]
         verdict = best if gap >= 0.10 else "tie (" + ", ".join(k for k in vals if vals[best][0] - vals[k][0] < 0.10) + ")"
         print(f"  {name:<32} n={n:<3} " + "  ".join(cells) + f"   -> {verdict}")
 
     print("\nRAG (whole pipeline), answerable categories pooled: correctness by mode, history effect, oracle")
     for m in models:
-        g = lambda mode: mean([r["metrics"]["correctness"] for r in rows if r["model"] == m and r["mode"] == mode and r["category"] in ANSWERABLE])
+        def g(mode, m=m):
+            return mean([r["metrics"]["correctness"] for r in rows if r["model"] == m and r["mode"] == mode and r["category"] in ANSWERABLE])
+
         print(f"  {m:<14} no_context {g('no_context'):.2f}  code_only {g('code_only'):.2f}  code_history {g('code_history'):.2f}  oracle {g('oracle'):.2f}")
 
     print("\nHallucination, latency, tokens (all categories pooled, mode = " + a.mode + ")")
     for m in models:
         rs = [r for r in rows if r["model"] == m and r["mode"] == a.mode]
-        hall = mean([1.0 if r["metrics"].get("hallucinated") else 0.0 for r in rs])
+        hall = mean([1.0 if r["metrics"]["hallucinated"] else 0.0 for r in rs if r["metrics"].get("hallucinated") is not None])  # refusals excluded, as in the report and Grafana
         uns = mean([r["metrics"]["unsupported_ratio"] for r in rs if r["metrics"].get("unsupported_ratio") is not None])
         lat = st.median([r["metrics"]["latency_ms"] for r in rs]) / 1000
+        lat_mean = mean([r["metrics"]["latency_ms"] for r in rs]) / 1000
         tin = st.median([r["metrics"]["tokens_in"] for r in rs if r["metrics"].get("tokens_in") is not None])
         tout = st.median([r["metrics"]["tokens_out"] for r in rs if r["metrics"].get("tokens_out") is not None])
-        print(f"  {m:<14} hallucinated {hall:.0%}  unsupported-sentence ratio {uns:.2f}  median latency {lat:.1f}s  tokens in/out {tin:.0f}/{tout:.0f}")
+        print(f"  {m:<14} hallucinated {hall:.0%}  unsupported-sentence ratio {uns:.2f}  latency median {lat:.1f}s (mean {lat_mean:.1f}s)  tokens in/out {tin:.0f}/{tout:.0f}")
 
     print("\nRetrieval quality (property of the retriever, identical for every model): evidence recall / precision by mode")
     for mode in ("code_only", "code_history", "oracle"):

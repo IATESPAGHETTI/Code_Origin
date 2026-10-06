@@ -60,7 +60,7 @@ Code shows *what* exists; the reason it exists is in the history around it (comm
 ## Which model is best for what? (see docs/EVALUATION.md section 5c)
 - **Explanation, bug analysis, dependency links (issue/PR/commit relations):** llama2 and codellama:7b tie (differences under 0.10 on 4-10 questions each); starcoder2:3b is far behind (0.15-0.50).
 - **Code retrieval (lookups in current code):** codellama:7b best (1.00 vs llama2 0.75), only 4 questions.
-- **RAG overall:** llama2 and codellama tie on accuracy (0.77 vs 0.74 on answerable questions); llama2 is about twice as fast (8.3 s vs 16.1 s median), codellama hallucinated less (20% vs 29%).
+- **RAG overall:** llama2 and codellama tie on accuracy (0.77 vs 0.74 on answerable questions); llama2 is faster at the median (8.3 s vs 16.1 s) but its mean is closer (12.0 s vs 14.5 s) because of some slow answers; codellama hallucinated less (22% vs 31%).
 - **Code generation, refactoring, test-pass rate:** not evaluated; the system answers questions, it does not write code. Say so plainly; do not invent numbers.
 - **Metrics measured:** correctness, hallucination rate, retrieval recall/precision, latency, tokens; relevance is not scored separately.
 

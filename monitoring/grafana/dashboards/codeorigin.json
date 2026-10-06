@@ -1,526 +1,759 @@
 {
- "uid": "codeorigin-overview",
- "title": "CodeOrigin overview",
- "schemaVersion": 39,
- "version": 1,
- "refresh": "15s",
- "time": {
-  "from": "now-1h",
-  "to": "now"
- },
- "panels": [
-  {
-   "id": 1,
-   "type": "timeseries",
-   "title": "Requests / s by route",
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prometheus"
-   },
-   "gridPos": {
-    "x": 0,
-    "y": 0,
-    "w": 12,
-    "h": 8
-   },
-   "fieldConfig": {
-    "defaults": {
-     "unit": "reqps"
+  "uid": "codeorigin-overview",
+  "title": "CodeOrigin overview",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "15s",
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "Requests / s by route",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (route) (rate(codeorigin_requests_total[1m]))",
+          "legendFormat": "{{route}}"
+        }
+      ]
     },
-    "overrides": []
-   },
-   "targets": [
     {
-     "refId": "A",
-     "expr": "sum by (route) (rate(codeorigin_requests_total[1m]))",
-     "legendFormat": "{{route}}"
-    }
-   ]
-  },
-  {
-   "id": 2,
-   "type": "timeseries",
-   "title": "5xx rate",
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prometheus"
-   },
-   "gridPos": {
-    "x": 12,
-    "y": 0,
-    "w": 12,
-    "h": 8
-   },
-   "fieldConfig": {
-    "defaults": {
-     "unit": "reqps"
+      "id": 2,
+      "type": "timeseries",
+      "title": "5xx rate",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(rate(codeorigin_requests_total{status=~\"5..\"}[5m]))",
+          "legendFormat": "5xx"
+        }
+      ]
     },
-    "overrides": []
-   },
-   "targets": [
     {
-     "refId": "A",
-     "expr": "sum(rate(codeorigin_requests_total{status=~\"5..\"}[5m]))",
-     "legendFormat": "5xx"
-    }
-   ]
-  },
-  {
-   "id": 3,
-   "type": "timeseries",
-   "title": "p95 latency by route",
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prometheus"
-   },
-   "gridPos": {
-    "x": 0,
-    "y": 8,
-    "w": 12,
-    "h": 8
-   },
-   "fieldConfig": {
-    "defaults": {
-     "unit": "s"
+      "id": 3,
+      "type": "timeseries",
+      "title": "p95 latency by route",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 8,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.95, sum by (le,route) (rate(codeorigin_request_seconds_bucket[5m])))",
+          "legendFormat": "{{route}}"
+        }
+      ]
     },
-    "overrides": []
-   },
-   "targets": [
     {
-     "refId": "A",
-     "expr": "histogram_quantile(0.95, sum by (le,route) (rate(codeorigin_request_seconds_bucket[5m])))",
-     "legendFormat": "{{route}}"
-    }
-   ]
-  },
-  {
-   "id": 4,
-   "type": "timeseries",
-   "title": "Guardrail triggers",
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prometheus"
-   },
-   "gridPos": {
-    "x": 12,
-    "y": 8,
-    "w": 12,
-    "h": 8
-   },
-   "fieldConfig": {
-    "defaults": {
-     "unit": "ops"
+      "id": 4,
+      "type": "timeseries",
+      "title": "Guardrail triggers",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 8,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ops"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (guardrail,action) (rate(codeorigin_guardrail_triggers_total[5m]))",
+          "legendFormat": "{{guardrail}} {{action}}"
+        }
+      ]
     },
-    "overrides": []
-   },
-   "targets": [
     {
-     "refId": "A",
-     "expr": "sum by (guardrail,action) (rate(codeorigin_guardrail_triggers_total[5m]))",
-     "legendFormat": "{{guardrail}} {{action}}"
-    }
-   ]
-  },
-  {
-   "id": 5,
-   "type": "timeseries",
-   "title": "LLM tokens",
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prometheus"
-   },
-   "gridPos": {
-    "x": 0,
-    "y": 16,
-    "w": 12,
-    "h": 8
-   },
-   "fieldConfig": {
-    "defaults": {
-     "unit": "short"
+      "id": 5,
+      "type": "timeseries",
+      "title": "LLM tokens",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 16,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (direction,mode) (rate(codeorigin_llm_tokens_total[5m]))",
+          "legendFormat": "{{direction}} {{mode}}"
+        }
+      ]
     },
-    "overrides": []
-   },
-   "targets": [
     {
-     "refId": "A",
-     "expr": "sum by (direction,mode) (rate(codeorigin_llm_tokens_total[5m]))",
-     "legendFormat": "{{direction}} {{mode}}"
-    }
-   ]
-  },
-  {
-   "id": 6,
-   "type": "timeseries",
-   "title": "Refusals by type",
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prometheus"
-   },
-   "gridPos": {
-    "x": 12,
-    "y": 16,
-    "w": 12,
-    "h": 8
-   },
-   "fieldConfig": {
-    "defaults": {
-     "unit": "ops"
+      "id": 6,
+      "type": "timeseries",
+      "title": "Refusals by type",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 16,
+        "w": 12,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ops"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (type) (rate(codeorigin_refusals_total[5m]))",
+          "legendFormat": "{{type}}"
+        }
+      ]
     },
-    "overrides": []
-   },
-   "targets": [
     {
-     "refId": "A",
-     "expr": "sum by (type) (rate(codeorigin_refusals_total[5m]))",
-     "legendFormat": "{{type}}"
-    }
-   ]
-  },
-  {
-   "id": 7,
-   "type": "logs",
-   "title": "Service logs",
-   "datasource": {
-    "type": "loki",
-    "uid": "loki"
-   },
-   "gridPos": {
-    "x": 0,
-    "y": 24,
-    "w": 24,
-    "h": 10
-   },
-   "targets": [
-    {
-     "refId": "A",
-     "expr": "{container=~\"codeorigin-.*\"}"
-    }
-   ]
-  },
-  {
-   "id": 20,
-   "type": "row",
-   "title": "Evaluation results (dev/test runs; automatic key-fact scoring; not human-graded)",
-   "gridPos": {
-    "x": 0,
-    "y": 34,
-    "w": 24,
-    "h": 1
-   },
-   "collapsed": false,
-   "panels": []
-  },
-  {
-   "id": 21,
-   "type": "gauge",
-   "title": "Run progress",
-   "description": "",
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prometheus"
-   },
-   "gridPos": {
-    "x": 0,
-    "y": 35,
-    "w": 4,
-    "h": 6
-   },
-   "fieldConfig": {
-    "defaults": {
-     "unit": "percentunit",
-     "min": 0,
-     "max": 1
+      "id": 7,
+      "type": "logs",
+      "title": "Service logs",
+      "datasource": {
+        "type": "loki",
+        "uid": "loki"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 24,
+        "w": 24,
+        "h": 10
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "{container=~\"codeorigin-.*\"}"
+        }
+      ]
     },
-    "overrides": []
-   },
-   "targets": [
     {
-     "refId": "A",
-     "expr": "codeorigin_eval_run_progress{run=\"$run\"}",
-     "legendFormat": "{{status}}",
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "instant": true,
-     "range": false
-    }
-   ],
-   "options": {
-    "showThresholdMarkers": false
-   }
-  },
-  {
-   "id": 22,
-   "type": "barchart",
-   "title": "Overall correctness by model and mode",
-   "description": "Mean key-fact correctness over all categories; see the category panels, there is no single headline score.",
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prometheus"
-   },
-   "gridPos": {
-    "x": 4,
-    "y": 35,
-    "w": 10,
-    "h": 8
-   },
-   "fieldConfig": {
-    "defaults": {
-     "unit": "percentunit",
-     "min": 0,
-     "max": 1
+      "id": 20,
+      "type": "row",
+      "title": "Evaluation results (automatic key-fact scoring, validated against LLM judges and a hand check)",
+      "gridPos": {
+        "x": 0,
+        "y": 34,
+        "w": 24,
+        "h": 1
+      },
+      "collapsed": false,
+      "panels": []
     },
-    "overrides": []
-   },
-   "targets": [
     {
-     "refId": "A",
-     "expr": "codeorigin_eval_correctness_overall{run=\"$run\",model=~\"$model\"}",
-     "legendFormat": "{{model}} / {{mode}}",
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "instant": true,
-     "range": false
-    }
-   ]
-  },
-  {
-   "id": 23,
-   "type": "barchart",
-   "title": "History effect: code_history minus code_only (history categories)",
-   "description": "Pre-registered rule: useful only if >= 0.10 with a 95% CI above 0 and control loss <= 0.05. See the verdict table.",
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prometheus"
-   },
-   "gridPos": {
-    "x": 14,
-    "y": 35,
-    "w": 10,
-    "h": 8
-   },
-   "fieldConfig": {
-    "defaults": {
-     "unit": "short"
-    },
-    "overrides": []
-   },
-   "targets": [
-    {
-     "refId": "A",
-     "expr": "codeorigin_eval_history_effect{run=\"$run\",bound=\"mean\"}",
-     "legendFormat": "{{model}}",
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "instant": true,
-     "range": false
-    }
-   ]
-  },
-  {
-   "id": 24,
-   "type": "table",
-   "title": "Verdict (pre-registered rule)",
-   "description": "",
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prometheus"
-   },
-   "gridPos": {
-    "x": 0,
-    "y": 41,
-    "w": 4,
-    "h": 6
-   },
-   "fieldConfig": {
-    "defaults": {
-     "unit": "short"
-    },
-    "overrides": []
-   },
-   "targets": [
-    {
-     "refId": "A",
-     "expr": "codeorigin_eval_verdict{run=\"$run\"} == 1",
-     "legendFormat": "",
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "instant": true,
-     "range": false,
-     "format": "table"
-    }
-   ],
-   "transformations": [
-    {
-     "id": "organize",
-     "options": {
-      "excludeByName": {
-       "Time": true,
-       "Value": true,
-       "__name__": true,
-       "job": true,
-       "instance": true,
-       "run": true
+      "id": 21,
+      "type": "gauge",
+      "title": "Run progress",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 35,
+        "w": 4,
+        "h": 6
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "min": 0,
+          "max": 1
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "codeorigin_eval_run_progress{run=\"$run\"}",
+          "legendFormat": "{{status}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "instant": true,
+          "range": false
+        }
+      ],
+      "options": {
+        "showThresholdMarkers": false
       }
-     }
-    }
-   ]
-  },
-  {
-   "id": 25,
-   "type": "barchart",
-   "title": "Correctness by category",
-   "description": "Per-category means; n per category is small on the demo dataset, so read with the confidence intervals in the report.",
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prometheus"
-   },
-   "gridPos": {
-    "x": 0,
-    "y": 47,
-    "w": 14,
-    "h": 9
-   },
-   "fieldConfig": {
-    "defaults": {
-     "unit": "percentunit",
-     "min": 0,
-     "max": 1
     },
-    "overrides": []
-   },
-   "targets": [
     {
-     "refId": "A",
-     "expr": "codeorigin_eval_correctness{run=\"$run\",model=~\"$model\"}",
-     "legendFormat": "{{model}} / {{mode}} / {{category}}",
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "instant": true,
-     "range": false
-    }
-   ]
-  },
-  {
-   "id": 26,
-   "type": "barchart",
-   "title": "Failure taxonomy (answers)",
-   "description": "",
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prometheus"
-   },
-   "gridPos": {
-    "x": 14,
-    "y": 43,
-    "w": 10,
-    "h": 9
-   },
-   "fieldConfig": {
-    "defaults": {
-     "unit": "short"
+      "id": 22,
+      "type": "barchart",
+      "title": "Overall correctness by model and mode",
+      "description": "Mean key-fact correctness over all categories; see the category panels, there is no single headline score.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 4,
+        "y": 35,
+        "w": 10,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "min": 0,
+          "max": 1
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "codeorigin_eval_correctness_overall{run=\"$run\",model=~\"$model\"}",
+          "legendFormat": "{{model}} / {{mode}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "instant": true,
+          "range": false
+        }
+      ]
     },
-    "overrides": []
-   },
-   "targets": [
     {
-     "refId": "A",
-     "expr": "sum by (model, failure) (codeorigin_eval_failures{run=\"$run\",model=~\"$model\"})",
-     "legendFormat": "{{model}} / {{failure}}",
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "instant": true,
-     "range": false
-    }
-   ]
-  },
-  {
-   "id": 27,
-   "type": "barchart",
-   "title": "LLM jury correctness (answers it graded)",
-   "description": "Jury is not validated against humans yet (needs graded answers; see docs/OWN_REPO_TEST.md).",
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prometheus"
-   },
-   "gridPos": {
-    "x": 14,
-    "y": 52,
-    "w": 10,
-    "h": 6
-   },
-   "fieldConfig": {
-    "defaults": {
-     "unit": "percentunit",
-     "min": 0,
-     "max": 1
+      "id": 23,
+      "type": "barchart",
+      "title": "History effect: code_history minus code_only (history categories)",
+      "description": "Pre-registered rule: useful only if >= 0.10 with a 95% CI above 0 and control loss <= 0.05. See the verdict table.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 14,
+        "y": 35,
+        "w": 10,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "codeorigin_eval_history_effect{run=\"$run\",bound=\"mean\"}",
+          "legendFormat": "{{model}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "instant": true,
+          "range": false
+        }
+      ]
     },
-    "overrides": []
-   },
-   "targets": [
     {
-     "refId": "A",
-     "expr": "codeorigin_eval_jury_correctness{run=\"$run\",model=~\"$model\"}",
-     "legendFormat": "{{model}} / {{mode}}",
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prometheus"
-     },
-     "instant": true,
-     "range": false
+      "id": 24,
+      "type": "table",
+      "title": "Verdict (pre-registered rule)",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 41,
+        "w": 4,
+        "h": 6
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "codeorigin_eval_verdict{run=\"$run\"} == 1",
+          "legendFormat": "",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "instant": true,
+          "range": false,
+          "format": "table"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "Value": true,
+              "__name__": true,
+              "job": true,
+              "instance": true,
+              "run": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "type": "barchart",
+      "title": "Correctness by category",
+      "description": "Per-category means; n per category is small on the demo dataset, so read with the confidence intervals in the report.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 47,
+        "w": 14,
+        "h": 9
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "min": 0,
+          "max": 1
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "codeorigin_eval_correctness{run=\"$run\",model=~\"$model\"}",
+          "legendFormat": "{{model}} / {{mode}} / {{category}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "instant": true,
+          "range": false
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "type": "barchart",
+      "title": "Failure taxonomy (answers)",
+      "description": "",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 14,
+        "y": 43,
+        "w": 10,
+        "h": 9
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (model, failure) (codeorigin_eval_failures{run=\"$run\",model=~\"$model\"})",
+          "legendFormat": "{{model}} / {{failure}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "instant": true,
+          "range": false
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "type": "barchart",
+      "title": "gemma:2b jury score (too lenient, not used for conclusions)",
+      "description": "The small in-service jury gave every answer 100%. Scoring was validated instead against DeepSeek, GPT and Gemini judges and a hand check (docs/EVALUATION.md section 5b).",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 14,
+        "y": 52,
+        "w": 10,
+        "h": 6
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "min": 0,
+          "max": 1
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "codeorigin_eval_jury_correctness{run=\"$run\",model=~\"$model\"}",
+          "legendFormat": "{{model}} / {{mode}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "instant": true,
+          "range": false
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "type": "row",
+      "title": "Quality, retrieval and cost per model (hallucination, retrieval, latency, tokens)",
+      "collapsed": false,
+      "gridPos": {
+        "x": 0,
+        "y": 58,
+        "w": 24,
+        "h": 1
+      },
+      "panels": []
+    },
+    {
+      "id": 29,
+      "type": "barchart",
+      "title": "Hallucination rate (code_history)",
+      "description": "Share of answers where at least half the sentences are not supported by the retrieved evidence (lexical grounding check).",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 59,
+        "w": 8,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "min": 0,
+          "max": 1
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "codeorigin_eval_quality{run=\"$run\",model=~\"$model\",mode=\"code_history\",metric=\"hallucination_rate\"}",
+          "legendFormat": "{{model}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "instant": true,
+          "range": false
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "type": "barchart",
+      "title": "Retrieval quality by mode",
+      "description": "Evidence recall and precision: how much of the gold evidence was retrieved, and how much of what was retrieved was gold. A property of the retriever, so the same for every model.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 8,
+        "y": 59,
+        "w": 8,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "min": 0,
+          "max": 1
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "avg by (mode, metric) (codeorigin_eval_quality{run=\"$run\",metric=~\"evidence_recall|evidence_precision\"})",
+          "legendFormat": "{{mode}} / {{metric}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "instant": true,
+          "range": false
+        }
+      ]
+    },
+    {
+      "id": 31,
+      "type": "barchart",
+      "title": "Mean response latency (s)",
+      "description": "End-to-end seconds per answer (retrieval + generation) on one 6 GB GPU.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 59,
+        "w": 8,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "min": 0
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "codeorigin_eval_latency_seconds{run=\"$run\",model=~\"$model\",mode=~\"code_only|code_history\"}",
+          "legendFormat": "{{model}} / {{mode}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "instant": true,
+          "range": false
+        }
+      ]
+    },
+    {
+      "id": 32,
+      "type": "barchart",
+      "title": "Mean tokens written per answer",
+      "description": "Output tokens (answers were capped at 300). Input tokens are about the same for every model because the context budget is fixed.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 67,
+        "w": 8,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "min": 0
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "codeorigin_eval_tokens{run=\"$run\",model=~\"$model\",mode=\"code_history\",direction=\"out\"}",
+          "legendFormat": "{{model}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "instant": true,
+          "range": false
+        }
+      ]
+    },
+    {
+      "id": 33,
+      "type": "barchart",
+      "title": "Unsupported-sentence ratio (code_history)",
+      "description": "Mean share of answer sentences without lexical support in the evidence (G4). Lower is better.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 8,
+        "y": 67,
+        "w": 8,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "min": 0,
+          "max": 1
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "codeorigin_eval_quality{run=\"$run\",model=~\"$model\",mode=\"code_history\",metric=\"unsupported_ratio\"}",
+          "legendFormat": "{{model}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "instant": true,
+          "range": false
+        }
+      ]
+    },
+    {
+      "id": 34,
+      "type": "barchart",
+      "title": "Refusal correctness by mode",
+      "description": "Share of answers where the system refused or abstained when it should (and answered when it should).",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 67,
+        "w": 8,
+        "h": 8
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "min": 0,
+          "max": 1
+        },
+        "overrides": []
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "codeorigin_eval_quality{run=\"$run\",model=~\"$model\",metric=\"refusal_correct\"}",
+          "legendFormat": "{{model}} / {{mode}}",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "instant": true,
+          "range": false
+        }
+      ]
     }
-   ]
+  ],
+  "templating": {
+    "list": [
+      {
+        "name": "run",
+        "label": "Eval run",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": {
+          "query": "label_values(codeorigin_eval_run_progress, run)",
+          "refId": "r"
+        },
+        "refresh": 2,
+        "sort": 4,
+        "current": {},
+        "includeAll": false
+      },
+      {
+        "name": "model",
+        "label": "Model",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": {
+          "query": "label_values(codeorigin_eval_correctness_overall{run=\"$run\"}, model)",
+          "refId": "m"
+        },
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "allValue": ".*",
+        "current": {}
+      }
+    ]
   }
- ],
- "templating": {
-  "list": [
-   {
-    "name": "run",
-    "label": "Eval run",
-    "type": "query",
-    "datasource": {
-     "type": "prometheus",
-     "uid": "prometheus"
-    },
-    "query": {
-     "query": "label_values(codeorigin_eval_run_progress, run)",
-     "refId": "r"
-    },
-    "refresh": 2,
-    "sort": 4,
-    "current": {},
-    "includeAll": false
-   },
-   {
-    "name": "model",
-    "label": "Model",
-    "type": "query",
-    "datasource": {
-     "type": "prometheus",
-     "uid": "prometheus"
-    },
-    "query": {
-     "query": "label_values(codeorigin_eval_correctness_overall{run=\"$run\"}, model)",
-     "refId": "m"
-    },
-    "refresh": 2,
-    "includeAll": true,
-    "multi": true,
-    "allValue": ".*",
-    "current": {}
-   }
-  ]
- }
 }

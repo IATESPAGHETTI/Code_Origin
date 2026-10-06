@@ -275,3 +275,17 @@ def test_metrics_endpoint_exports_scores_and_verdicts():
     assert f'codeorigin_eval_correctness{{category="design_rationale",mode="code_history",model="m1",run="{run_id}"}} 1.0' in text
     assert f'codeorigin_eval_run_progress{{name="t",run="{run_id}",status="done"}} 1.0' in text
     assert 'verdict="history is useful"' in text and "codeorigin_eval_history_effect" in text
+    assert "codeorigin_eval_quality" in text and 'metric="evidence_recall"' in text and "codeorigin_eval_latency_seconds" in text
+    assert 'direction="out"' in text
+
+
+def test_metrics_endpoint_skips_failed_runs():
+    from fastapi.testclient import TestClient
+
+    store = Store(":memory:")
+    items = make_items()
+    run_id = store.create_run("bad", "t", "hash", {"split": "all"}, len(items))
+    runner.execute(store, run_id, "repo", items, ["m1"], ["code_history"], FakeBackends(), jury_model=None)
+    store.finish_run(run_id, "failed", "interrupted")
+    main._state["store"] = store
+    assert f'run="{run_id}"' not in TestClient(main.app).get("/metrics").text

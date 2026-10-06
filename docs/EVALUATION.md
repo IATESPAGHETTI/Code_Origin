@@ -136,15 +136,15 @@ The assignment-style question "which model is best for X" is answered below for 
 | Metric | llama2 | codellama:7b | starcoder2:3b |
 |---|---|---|---|
 | Accuracy / correctness (answerable questions) | 0.77 | 0.74 | 0.20 |
-| Hallucination rate (answers with at least half the sentences unsupported by the evidence) | 29% | 20% | 54% |
+| Hallucination rate (answers with at least half the sentences unsupported by the evidence; refusals excluded) | 31% | 22% | 59% |
 | Unsupported-sentence ratio (mean) | 0.27 | 0.26 | 0.37 |
-| Median response latency | 8.3 s | 16.1 s | 1.4 s |
-| Tokens in / out (median) | 2217 / 90 | 2217 / 193 | 1893 / 44 |
+| Response latency, median (mean) | 8.3 s (12.0 s) | 16.1 s (14.5 s) | 1.4 s (2.3 s) |
+| Tokens in (median) / out, median (mean) | 2217 / 90 (126) | 2217 / 193 (173) | 1893 / 44 (147) |
 | Relevance | not measured separately | not measured separately | not measured separately |
 
 Retrieval quality is a property of the retriever, not of the model, so it is identical for all three: evidence recall / precision 0.14 / 0.05 (`code_only`), 0.70 / 0.25 (`code_history`), 1.00 / 1.00 (`oracle`). Resource consumption was not profiled per model beyond latency and token counts (all runs on one 6 GB GPU); "relevance" is not scored separately from correctness.
 
-**Reading it.** (1) For every task that history can help (explanation, bug analysis, dependency links), llama2 and codellama:7b are indistinguishable at this sample size and starcoder2:3b is clearly worse. (2) The only task with a clear winner is current-code lookup, where codellama:7b is ahead (4 questions, so weak evidence). (3) The practical difference between the two 7B models is cost, not accuracy: llama2 answers in about half the time (8.3 s vs 16.1 s) and writes shorter answers, while codellama hallucinated less (20% vs 29%) and was better at code lookup. (4) starcoder2:3b is the fastest (1.4 s) but hallucinated in 54% of answers, so speed does not compensate.
+**Reading it.** (1) For every task that history can help (explanation, bug analysis, dependency links), llama2 and codellama:7b are indistinguishable at this sample size and starcoder2:3b is clearly worse. (2) The only task with a clear winner is current-code lookup, where codellama:7b is ahead (4 questions, so weak evidence). (3) The practical difference between the two 7B models is cost, not accuracy: llama2 is faster at the median (8.3 s vs 16.1 s) but the means are closer (12.0 s vs 14.5 s) because some llama2 answers are slow, and it writes shorter answers, while codellama hallucinated less (22% vs 31%) and was better at code lookup. (4) starcoder2:3b is the fastest (1.4 s median) but hallucinated in 59% of answers, so speed does not compensate. The hallucination rate, latency and tokens above are also exported to Prometheus and shown on the Grafana dashboard (section 8).
 
 ## 6. Interpretation
 0. **The headline result now holds on a real repository.** On independent history (run #8), both 7B models pass the pre-registered rule: +0.32 and +0.28 correctness on 24 history questions, intervals excluding 0; the control category (4 questions) shows no loss by the automatic score but a possible drop by an LLM judge, so "no loss" is not claimed. The effect is smaller than on the demo repository (+0.42), as expected when the history is written by strangers and retrieval is harder (recall 0.70 not 1.00). The small model shows no effect on either repository. The remaining weaknesses are retrieval of vague or unusual phrasings and refusal of unanswerable questions about a real repository.
@@ -187,6 +187,7 @@ python scripts/check_dataset.py services/eval/datasets/itsdangerous.json demo-da
 python scripts/run_eval.py --live --dataset itsdangerous --repo pallets__itsdangerous --split test --models llama2,codellama:7b,starcoder2:3b --out reports/itsdangerous_heldout
 python scripts/sensitivity.py reports/itsdangerous_heldout.json --exclude it06,it35
 ```
+**Live dashboards (Prometheus + Grafana).** Start the stack with the monitoring overlay (`docker compose -f docker-compose.yml -f docker-compose.demo.yml -f docker-compose.ports.yml -f docker-compose.monitoring.yml up -d`). Prometheus (:9090) scrapes the gateway and the eval service every 30 s; Grafana (:3000, anonymous read-only viewing, no login) opens on the "CodeOrigin overview" dashboard with a run selector (default: newest finished run). Panels: live service metrics (requests per second by route, p95 latency, 5xx rate, guardrail triggers, LLM tokens, refusals, service logs via Loki), the evaluation results of the selected run (overall correctness by model and mode, history effect with its interval, the pre-registered verdict, correctness by category, failure taxonomy), and quality and cost per model (hallucination rate, retrieval recall and precision by mode, mean latency, tokens per answer, unsupported-sentence ratio, refusal correctness). Screenshots: `docs/images/grafana_*.jpg`. Failed (interrupted) runs are not exported.
 **Artefacts.** `reports/dev_full_3models.md` and `.json` (every stored answer, metrics, guardrail trace); `reports/itsdangerous_heldout.md` and `.json` (run #8), `reports/grading_itsdangerous.csv` (blind sheet for human grading). The same results are browsable on the website's Evaluation page. Offline CI (`.github/workflows/ci.yml`) runs the unit tests, drift checks and a mock-LLM end-to-end test; mock results are for plumbing only and are never evidence.
 
 ## 9. What would make this stronger (next steps, in order of value)

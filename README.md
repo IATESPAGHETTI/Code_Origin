@@ -38,7 +38,7 @@ cp .env.example .env
 make up         # add --profile ollama + OLLAMA_HOST=http://codeorigin-ollama:11434 to run Ollama in a container with the GPU
 make health
 ```
-Add `-f docker-compose.monitoring.yml` (`make monitoring`) for Prometheus :9090, Grafana :3000, Loki.
+Add `-f docker-compose.monitoring.yml` (`make monitoring`) for Prometheus :9090, Grafana :3000 (no login, read-only) and Loki. Grafana shows live service metrics and the evaluation results (scores, history effect, hallucination rate, retrieval quality, latency, tokens) of any run; see `docs/OPERATIONS.md`.
 
 Seed the Ledgerly demo repo: `python scripts/make_demo_repo.py demo-data`, then (with `docker-compose.demo.yml`) `python scripts/seed_demo.py --container-path /demo`. Git Bash on Windows: prefix with `MSYS_NO_PATHCONV=1`.
 

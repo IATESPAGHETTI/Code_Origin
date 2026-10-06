@@ -1,6 +1,6 @@
 """Prometheus exposition of evaluation results, computed from the stored runs at scrape time.
 
-Only the newest RUNS_EXPORTED runs are exported to keep label cardinality small. Scores are the same
+Only the newest RUNS_EXPORTED runs are exported to keep label cardinality small, and failed (interrupted) runs are skipped. Scores are the same
 numbers as the report (key-fact correctness, bootstrap CI, jury, verdict); nothing is recomputed differently.
 """
 from prometheus_client.core import GaugeMetricFamily
@@ -8,6 +8,10 @@ from prometheus_client.core import GaugeMetricFamily
 from . import report
 
 RUNS_EXPORTED = 10
+# (metric label, field in the report cell); 'hallucinated' is the share of answers flagged hallucinated
+QUALITY_FIELDS = [("hallucination_rate", "hallucinated"), ("unsupported_ratio", "unsupported_ratio"), ("evidence_recall", "evidence_recall"),
+                  ("evidence_precision", "evidence_precision"), ("gold_cited", "gold_cited"), ("citation_validity", "citation_validity"),
+                  ("refusal_correct", "refusal_correct")]
 
 
 class EvalCollector:
@@ -32,7 +36,15 @@ class EvalCollector:
                                     labels=["run", "model", "verdict"])
         fails = GaugeMetricFamily("codeorigin_eval_failures", "Answers by failure category",
                                   labels=["run", "model", "mode", "failure"])
+        quality = GaugeMetricFamily("codeorigin_eval_quality", "Mean answer-quality and retrieval metrics per model and mode",
+                                    labels=["run", "model", "mode", "metric"])
+        latency = GaugeMetricFamily("codeorigin_eval_latency_seconds", "Mean end-to-end response latency per model and mode",
+                                    labels=["run", "model", "mode"])
+        tokens = GaugeMetricFamily("codeorigin_eval_tokens", "Mean tokens per answer, by direction",
+                                   labels=["run", "model", "mode", "direction"])
         for run in store.list_runs()[:RUNS_EXPORTED]:
+            if run["status"] == "failed":
+                continue
             rid = str(run["id"])
             frac = (run.get("done") or 0) / run["total"] if run.get("total") else 0.0
             progress.add_metric([rid, run.get("name") or "", run["status"]], frac)
@@ -53,6 +65,14 @@ class EvalCollector:
                         ci.add_metric([rid, model, mode, "high"], hi)
                 if cell["jury_correctness"] is not None:
                     jury.add_metric([rid, model, mode], cell["jury_correctness"])
+                for metric, field in QUALITY_FIELDS:
+                    if cell.get(field) is not None:
+                        quality.add_metric([rid, model, mode, metric], cell[field])
+                if cell.get("latency_ms") is not None:
+                    latency.add_metric([rid, model, mode], cell["latency_ms"] / 1000.0)
+                for direction, field in (("in", "tokens_in"), ("out", "tokens_out")):
+                    if cell.get(field) is not None:
+                        tokens.add_metric([rid, model, mode, direction], cell[field])
             for d in rep["decisions"]:
                 effect.add_metric([rid, d["model"], "mean"], d["history_diff"])
                 effect.add_metric([rid, d["model"], "low"], d["history_ci"][0])
@@ -62,4 +82,4 @@ class EvalCollector:
                 model, mode = key.split("|")
                 for failure, n in counts.items():
                     fails.add_metric([rid, model, mode, failure], n)
-        yield from (progress, correct, total, ci, jury, effect, verdict, fails)
+        yield from (progress, correct, total, ci, jury, effect, verdict, fails, quality, latency, tokens)

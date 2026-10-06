@@ -33,5 +33,16 @@ Default `llama2` (4096 ctx, fp16 KV cache) needs ~6.1 GB and spills ~30% to the 
 Start the host server for the session with those variables (quit the Ollama tray app first): `ollama serve`. The q8 KV cache and the context size
 are recorded run settings and apply identically to all modes. Prompts are ≈2,000 tokens + up to 300 generated, so 3072 does not truncate.
 
+## Monitoring is part of the demo stack
+Start everything, including Prometheus :9090, Grafana :3000, Loki and Promtail:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.demo.yml -f docker-compose.ports.yml -f docker-compose.monitoring.yml up -d
+```
+
+Grafana opens read-only without a login (`GRAFANA_ANONYMOUS_VIEWER=true`; set it to `false` anywhere shared). Open http://localhost:3000, choose the "CodeOrigin overview" dashboard, and pick the evaluation run in the "Eval run" selector. Ask a few questions on the Ask page first so the live panels (requests, latency, tokens, guardrails) have data. Screenshots of the dashboard are in `docs/images/`.
+
+Metrics exported by the eval service (`/metrics`, internal): `codeorigin_eval_correctness*`, `codeorigin_eval_history_effect`, `codeorigin_eval_verdict`, `codeorigin_eval_failures`, `codeorigin_eval_jury_correctness`, `codeorigin_eval_run_progress`, and the quality and cost metrics `codeorigin_eval_quality{metric=hallucination_rate|unsupported_ratio|evidence_recall|evidence_precision|gold_cited|citation_validity|refusal_correct}`, `codeorigin_eval_latency_seconds` and `codeorigin_eval_tokens{direction=in|out}`.
+
 ## Evaluation scores in Grafana
 The eval service exposes `/metrics` (internal only; Prometheus scrapes `codeorigin-eval:8205` every 30 s). It exports the newest 10 runs: per-category and overall correctness (with CI bounds), jury correctness, history effect (`code_history` minus `code_only`) with its CI, the pre-registered verdict, failure counts and run progress. The dashboard row "Evaluation results" has run and model selectors. These are the same numbers as the markdown report: automatic key-fact scoring, not human-graded, and per-category n is small on the demo dataset.
