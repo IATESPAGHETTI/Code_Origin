@@ -356,36 +356,6 @@ function SlideFailures() {
   )
 }
 
-function SlideLimits() {
-  return (
-    <div>
-      <Title eyebrow="Limitations and threats to validity" sub="What the evidence does and does not support.">
-        Honest limits, and what comes next
-      </Title>
-      <div className="grid gap-4 md:grid-cols-2 text-lg">
-        <div className="panel"><b>Limits</b>
-          <ul className="mt-2 list-disc space-y-1 pl-5 muted">
-            <li><b>Circularity:</b> on the demo repository we wrote history and questions together. On the real repository we drafted the questions from its threads (script-checked; an independent review found 2 weak items of 35, not edited).</li>
-            <li>Small sample: 24 history, 4 control questions on the real repo; wide intervals; one repository.</li>
-            <li>Automatic key-fact scoring; human grades not yet collected. The LLM jury is too lenient.</li>
-            <li>One repository, small local models on a 6 GB GPU.</li>
-            <li>Guardrail thresholds rest on very few negative examples.</li>
-          </ul>
-        </div>
-        <div className="panel"><b>Next steps</b>
-          <ul className="mt-2 list-disc space-y-1 pl-5 muted">
-            <li>Human-grade the 36-row blind sheet; report kappa for the automatic score.</li>
-            <li>A second person verifies the gold answers; add a second real repository.</li>
-            <li>Fix retrieval on unusual phrasings and the refusal gate for on-topic unanswerable questions.</li>
-            <li>Larger-model comparison to test whether the effect depends on size.</li>
-          </ul>
-        </div>
-      </div>
-      <p className="mt-5 text-base muted">We claim: supported on one real repository for 7B models, not yet general.</p>
-    </div>
-  )
-}
-
 function SlideEnd() {
   return (
     <div className="flex h-full flex-col justify-center">
@@ -403,7 +373,7 @@ const SLIDES = [
   ['Title', SlideTitle], ['Problem', SlideProblem], ['Research design', SlideResearch], ['Methodology', SlideMethod],
   ['Architecture', SlideArchitecture], ['Question flow', SlideFlow], ['DevOps', SlideDevOps], ['CI/CD', SlideCI],
   ['Results', SlideResults], ['Interpretation', SlideInterpretation], ['Failure analysis', SlideFailures],
-  ['Live system', SlideHealth], ['Limits', SlideLimits], ['Questions', SlideEnd],
+  ['Live system', SlideHealth], ['Questions', SlideEnd],
 ]
 
 /* ------------------------------------------------------------------ shell */
