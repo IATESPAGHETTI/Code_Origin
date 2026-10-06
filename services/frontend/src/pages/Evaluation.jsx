@@ -121,7 +121,9 @@ export default function Evaluation() {
   const autoOpened = useRef(false)
   useEffect(() => {
     if (autoOpened.current || runId || !history.length) return
-    const latest = history.find((h) => h.status === 'done')
+    const done = history.filter((h) => h.status === 'done')
+    // prefer the newest run that compares several models: that is the one the recommendations need
+    const latest = done.find((h) => (h.config?.models || []).length > 1) || done[0]
     if (latest) { autoOpened.current = true; open(latest.id) }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [history])

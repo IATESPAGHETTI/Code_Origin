@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Recommendations from './Recommendations.jsx'
 
 const pct = (v) => (v == null ? '-' : `${Math.round(v * 100)}%`)
 const heat = (v) => (v == null ? {} : { background: `hsl(${Math.round(v * 120)} 70% 45% / 0.2)` })
@@ -43,6 +44,7 @@ export default function ModelLeaderboard({ rep }) {
 
   return (
     <section className="space-y-4">
+      <Recommendations rep={rep} />
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold">Which model is best where</h2>
