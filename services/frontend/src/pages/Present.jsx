@@ -319,7 +319,7 @@ function SlideInterpretation() {
         </table>
       </div>
       <div className="mt-5 grid gap-4 text-lg md:grid-cols-3">
-        <div className="panel"><b>It holds on a real repository.</b><p className="mt-1 text-base muted">Both 7B models pass the pre-registered rule on history written by strangers; the control loses nothing. The effect is smaller than on the demo (+0.3 vs +0.4), as expected.</p></div>
+        <div className="panel"><b>It holds on a real repository.</b><p className="mt-1 text-base muted">Both 7B models pass the pre-registered rule on history written by strangers, and an independent LLM judge (DeepSeek) confirms it (+0.35). Smaller than on the demo (+0.4), as expected. Caution: on the 4 code-only control questions the judge hints history can hurt.</p></div>
         <div className="panel"><b>Mechanism: retrieval.</b><p className="mt-1 text-base muted">Evidence recall rises from 0.14 (code only) to 0.70 (with history). Excluding two items an independent review flagged leaves the conclusions unchanged.</p></div>
         <div className="panel"><b>Model size matters.</b><p className="mt-1 text-base muted">starcoder2:3b gets no benefit on either repository: even with the gold evidence it mostly invents (18 of 28 oracle answers wrong and hallucinated).</p></div>
       </div>
@@ -330,10 +330,11 @@ function SlideInterpretation() {
 function SlideFailures() {
   const items = [
     ['Retrieval misses unusual phrasing', '"Why was 1.0.0 removed from PyPI?" fetched unrelated issues (#92, #47); recall 0.70 not 1.00 on the real repo. Both 7B models then invented a reason, and code_only happened to score better, so the evolution category (n=2) regresses with history.', 'Query rewriting / commit-aware retrieval (not done).'],
+    ['History can distract on code questions', 'With history in the prompt llama2 said the default key derivation is "hmac" and cited an unrelated commit (the code says django-concat). Judge control score drops -0.25 / -0.12 (4 questions, CIs include 0).', 'More control questions; re-rank or filter history for code-only questions.'],
     ['Refusal gate does not transfer', 'Unanswerable but on-topic questions ("who was the first paying customer?") passed the relevance gate; codellama invented "Tristan Escalada, 2014". Only llama2 abstained, by itself.', 'Recalibrate G2 on negatives from several repositories.'],
     ['Model ignores or distorts evidence', 'Evidence retrieved (#111, #112) but codellama said 1.1.0 changed the default to HS512 (that was 1.0). starcoder2:3b: 18 of 28 oracle answers hallucinated.', 'Instruction-tuned models; human grading.'],
     ['Models rarely cite the right source', 'Gold evidence cited in only 1-2% of answers; citation validity is high (0.9-1.0) because invented refs are stripped (G3).', 'Stricter answer format; measure with humans.'],
-    ['Scoring and judge are unvalidated', 'Key-fact matching is automatic (a hedged "not mentioned, but..." answer scored 0); the gemma:2b jury gave every model 100%. Human sheet (36 rows) is ready, ungraded.', 'Human grading and kappa.'],
+    ['Automatic scoring is generous', 'Key-fact matching gave full credit to 143 answers; the DeepSeek judge rated 42 of them only partly right or wrong. Agreement kappa 0.75 (399 answers), GPT 0.94 (36). The small gemma:2b jury gave everyone 100%. Judges are LLMs; the human sheet is still ungraded.', 'Human grading; stricter key facts.'],
   ]
   return (
     <div>

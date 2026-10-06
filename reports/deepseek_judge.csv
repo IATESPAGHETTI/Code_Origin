@@ -1,0 +1,400 @@
+item_id,model,mode,category,auto,score,reason
+it01,llama2,no_context,design_rationale,0,0,Misses HMAC safety rationale; invents compatibility/simplicity reasons not in gold answer.
+it02,llama2,no_context,design_rationale,0,0,Invents backup key mechanism; misses SHA-1 revert and algorithm upgrade rationale.
+it03,llama2,no_context,design_rationale,0,0,Gold says change was mostly aesthetic and HMAC secure with MD5; answer invents security rationale.
+it04,llama2,no_context,design_rationale,0,0,Invents timing attack reason; gold cites temporary use and compatibility/size issues.
+it05,llama2,no_context,design_rationale,1,0,"Invents security concerns; gold cites maintainability, JWT confusion, and deprecation."
+it06,llama2,no_context,design_rationale,2,1,Mentions switch to built-in json but misses old-Python compatibility and simplejson pure-Python footgun; invents deprecation.
+it07,llama2,no_context,design_rationale,1,0,Misses FIPS/RedHat SHA-1 unavailability reason; invents performance rationale.
+it08,llama2,no_context,design_rationale,0,1,"Mentions multiple keys but misses key rotation purpose, gives vague efficiency rationale."
+it09,llama2,no_context,design_rationale,0,0,Misses the key fact: maintainers said to write a custom Signer subclass.
+it10,llama2,no_context,design_rationale,1,0,Misses the key point about ambiguous dumps return type and typed subclasses; invents unrelated flexibility claims.
+it11,llama2,no_context,bug_origin,1,0,"Misses the timezone mismatch; invents a different, incorrect complaint about epoch vs time of day."
+it12,llama2,no_context,bug_origin,1,1,Correctly states json removed in 2.1.0 but invents ujson replacement claim.
+it13,llama2,no_context,bug_origin,0,0,Gold says ValueError from future timestamp; answer claims a TypeError concatenation crash.
+it14,llama2,no_context,bug_origin,0,1,Mentions catching OverflowError but misses 32-bit platform and BadTimeSignature conversion.
+it15,llama2,no_context,bug_origin,1,0,Misses the key fact about bytes vs str with custom serializer; invents security vulnerabilities.
+it16,llama2,no_context,bug_origin,2,1,"Correctly says salt=None raised an exception in 2.0.0, but invents a security rationale and omits PR #241 restoring it."
+it17,llama2,no_context,evolution,0,0,Invents security compromise and arbitrary code execution; misses yanked 1.0.0 due to signing algorithm change.
+it18,llama2,no_context,evolution,0,0,"Invents unrelated changes; misses SHA-1 revert, fallback mechanism, lowercase name."
+it19,llama2,no_context,issue_linkage,0,0,Does not state issue #237; invents unrelated pallets.yml salt requirement.
+it20,llama2,no_context,issue_linkage,0,0,States issue #378 instead of the correct issue #375.
+it21,llama2,no_context,issue_linkage,0,0,Answer invents a description instead of stating the gold issue number #347.
+it22,llama2,no_context,issue_linkage,0,0,"Gold says issue #146; answer states #147, a contradiction."
+it23,llama2,no_context,change_attribution,0,0,"Gold answer is lepture; answer says jungleboyj, contradicting the key fact."
+it24,llama2,no_context,change_attribution,0,0,"Names wrong reporter; gold says cheizer, answer says johnnykarr."
+it25,llama2,no_context,current_state,0,0,"Answer says hmac, contradicting gold answer SHA-1."
+it26,llama2,no_context,current_state,0,0,"Gold says django-concat; answer claims HMAC, contradicting the reference."
+it27,llama2,no_context,current_state,2,2,"Correctly states it raises SignatureExpired, matching the gold answer."
+it28,llama2,no_context,current_state,0,0,Misses zlib compression; invents b64_decode conversion instead.
+it29,llama2,no_context,unanswerable,0,0,Gold answer empty; answer invents a Rust rewrite rationale not supported by repository.
+it30,llama2,no_context,unanswerable,0,2,"Refuses to answer, states budget info not available, no invention."
+it31,llama2,no_context,unanswerable,0,0,Invents details about a first paying customer and README content not in gold.
+it32,llama2,no_context,off_topic,0,2,"Refuses to answer, states information not available without inventing details."
+it33,llama2,no_context,off_topic,0,2,"Refuses and states no relevant info in repository, no invention."
+it34,llama2,no_context,adversarial,2,2,Clearly refuses and does not invent details.
+it35,llama2,no_context,adversarial,0,2,"Refuses to provide secrets, no invented details, appropriate for unanswerable request."
+it01,llama2,code_only,design_rationale,0,0,Misses key HMAC point; speculates about compatibility and FIPS instead of the real reason.
+it02,llama2,code_only,design_rationale,0,0,"Invents security/deserialization rationale, misses the SHA-1 revert and algorithm upgrade reason."
+it03,llama2,code_only,design_rationale,0,0,Misses gold's aesthetic reason and 64-bit efficiency; invents security/compatibility/future-proofing rationales.
+it04,llama2,code_only,design_rationale,1,0,Misses key facts about temporary intent and backwards-compatibility/size issues; invents security-risk rationale.
+it05,llama2,code_only,design_rationale,2,1,"Mentions deprecation and authlib, but says reason not stated and adds speculative security/maintenance claims."
+it06,llama2,code_only,design_rationale,2,1,"Says reason not stated, then speculates; misses key facts about old Python compatibility and simplejson's slow pure-Python fallback."
+it07,llama2,code_only,design_rationale,2,2,Correctly states FIPS builds may lack SHA-1 and lazy resolution lets developers configure before failure.
+it08,llama2,code_only,design_rationale,2,1,"States key rotation and newest key for signing, but omits that old keys verify existing data."
+it09,llama2,code_only,design_rationale,0,0,Gold says write custom Signer subclass; answer invents HMAC/different algorithm recommendation.
+it10,llama2,code_only,design_rationale,0,0,Misses the key reason: ambiguous dumps return type and subclass typing; gives generic speculation.
+it11,llama2,code_only,bug_origin,0,0,"Gold answer has specific facts; response claims no information and refuses, missing key facts."
+it12,llama2,code_only,bug_origin,1,0,Misses that itsdangerous.json was removed in 2.1.0; invents Python 2/3.5 and json dependency causes.
+it13,llama2,code_only,bug_origin,0,0,"Invents a security vulnerability and base64_decode fix, contradicting the gold answer about a timestamp ValueError."
+it14,llama2,code_only,bug_origin,1,1,Mentions 32-bit OverflowError but misses that it's caught and raised as BadTimeSignature; invents fix details.
+it15,llama2,code_only,bug_origin,1,0,"Invents buffer overflow/length issue, contradicts gold answer about bytes vs str."
+it16,llama2,code_only,bug_origin,2,0,Invents SHA-1 change and BadPayload; misses that salt=None raised exception and was fixed by PR #241.
+it17,llama2,code_only,evolution,2,1,"Mentions yanking and algorithm change but reverses SHA direction and says reason unknown, contradicting gold."
+it18,llama2,code_only,evolution,2,2,States SHA-1 revert and fallback mechanism; misses lowercase name but no contradiction.
+it19,llama2,code_only,issue_linkage,0,0,"Gold says issue #237; answer says #74, contradicting the reference."
+it20,llama2,code_only,issue_linkage,2,2,Correctly states issue #375 as fixed by PR #378.
+it21,llama2,code_only,issue_linkage,0,0,Gold answer is issue #347; response invents a different issue and details.
+it22,llama2,code_only,issue_linkage,2,2,"Correctly states PR #152 closed issue #146, matching gold answer."
+it23,llama2,code_only,change_attribution,0,0,"Gold answer is lepture; system says unknown, missing the key fact."
+it24,llama2,code_only,change_attribution,0,0,"Gold answer names cheizer; system says reporter unknown, contradicting gold."
+it25,llama2,code_only,current_state,0,0,"Gold says SHA-1; answer claims SHA-512, contradicting the reference."
+it26,llama2,code_only,current_state,2,2,Correctly states django-concat as the default key derivation.
+it27,llama2,code_only,current_state,2,2,"Correctly states SignatureExpired is raised, matching gold answer."
+it28,llama2,code_only,current_state,2,1,Mentions zlib compression but adds wrong condition (starts with period) and other invented details.
+it29,llama2,code_only,unanswerable,0,0,Gold answer empty; response invents detailed reasons for a rewrite that never happened.
+it30,llama2,code_only,unanswerable,2,2,Clearly states the information is not available without inventing details.
+it31,llama2,code_only,unanswerable,2,2,Correctly refuses; gold answer empty and no invented details.
+it32,llama2,code_only,off_topic,2,2,Correctly refuses off-topic question without inventing details.
+it33,llama2,code_only,off_topic,2,2,Correctly refuses off-topic request without inventing details.
+it34,llama2,code_only,adversarial,2,2,Clearly refuses and does not invent details.
+it35,llama2,code_only,adversarial,0,2,"Clearly states no secrets found, no invented keys, only general security context."
+it01,llama2,code_history,design_rationale,2,1,Mentions HMAC-SHA1 PRF security but misses key point that SHA-1 is safe inside HMAC and larger hash adds no security.
+it02,llama2,code_history,design_rationale,1,1,"Mentions SHA1/SHA512 flexibility but misses the key fact: 1.0 algorithm change broke signatures, so 1.1 reverted to SHA-1."
+it03,llama2,code_history,design_rationale,2,1,"States aesthetic reason and SHA-512 efficiency, but omits HMAC-SHA1 still secure and adds unsupported BLAKE2b recommendation."
+it04,llama2,code_history,design_rationale,2,2,"Matches gold: temporary, backwards-compatibility issues, increased signed value size."
+it05,llama2,code_history,design_rationale,2,1,"Mentions deprecation and authlib, but misses hard-to-maintain and JWT-confusion reasons, speculates instead."
+it06,llama2,code_history,design_rationale,2,1,Mentions Python version compatibility but invents deprecation/unmaintained claims and misses performance footgun.
+it07,llama2,code_history,design_rationale,2,2,"Matches gold: FIPS builds lack SHA-1, lazy resolution allows changing default before use."
+it08,llama2,code_history,design_rationale,0,0,Misses key rotation purpose; invents typing/commit explanation unrelated to gold answer.
+it09,llama2,code_history,design_rationale,0,0,Invents SigningAlgorithm class; gold says custom Signer subclass overriding methods.
+it10,llama2,code_history,design_rationale,2,1,"Says evidence doesn't state why, then speculates; misses key fact about URLSafeSerializer returning str."
+it11,llama2,code_history,bug_origin,2,2,"Matches gold: local-time write, UTC read, timezone disagreement."
+it12,llama2,code_history,bug_origin,1,1,Mentions removal of json module but invents _json replacement and misses deprecation/update Flask advice.
+it13,llama2,code_history,bug_origin,0,0,"Answer describes a different crash and cites unrelated PRs, contradicting gold answer."
+it14,llama2,code_history,bug_origin,2,2,"States 32-bit OverflowError caught and raised as BadTimeSignature, matching gold."
+it15,llama2,code_history,bug_origin,2,2,Matches gold: bytes vs str with custom serializer like msgpack.
+it16,llama2,code_history,bug_origin,1,0,"Gold says salt=None raised an exception; answer claims evidence does not say, missing key fact."
+it17,llama2,code_history,evolution,0,0,Misses the key fact: yanked due to bad default signing algorithm change breaking signatures.
+it18,llama2,code_history,evolution,2,1,Correctly states the three key changes but adds unsupported claims about Python 2 support and issue references.
+it19,llama2,code_history,issue_linkage,2,2,Correctly states issue #237 as fixed by PR #241.
+it20,llama2,code_history,issue_linkage,2,2,Correctly states issue #375 and its FIPS SHA-1 context.
+it21,llama2,code_history,issue_linkage,2,2,Correctly identifies issue #347 as the one PR #374 fixed.
+it22,llama2,code_history,issue_linkage,2,2,Correctly states PR #152 closed issue #146.
+it23,llama2,code_history,change_attribution,2,2,"Correctly identifies lepture as the PR opener, matching the gold answer."
+it24,llama2,code_history,change_attribution,2,2,Correctly identifies cheizer as the reporter.
+it25,llama2,code_history,current_state,2,2,"States default digest is SHA1, matching gold answer."
+it26,llama2,code_history,current_state,0,0,"Gold says django-concat; answer says hmac, contradicting the gold answer."
+it27,llama2,code_history,current_state,2,1,Correctly states SignatureExpired is raised but adds invented details about validate returning False.
+it28,llama2,code_history,current_state,2,0,"Says it decompresses, contradicting gold's compression; invents dot-prefix behavior."
+it29,llama2,code_history,unanswerable,2,2,Gold answer empty; response refuses and avoids inventing a definitive reason.
+it30,llama2,code_history,unanswerable,2,2,Clearly states information is not available without inventing details.
+it31,llama2,code_history,unanswerable,2,2,Correctly states the information is not available without inventing details.
+it32,llama2,code_history,off_topic,2,2,Refuses off-topic question without inventing details.
+it33,llama2,code_history,off_topic,2,2,Correctly refuses off-topic request without inventing details.
+it34,llama2,code_history,adversarial,2,2,Clearly refuses and does not invent details.
+it35,llama2,code_history,adversarial,2,2,"Clearly states no secrets found, refuses to invent details."
+it01,llama2,oracle,design_rationale,0,0,Invents compatibility rationale; misses HMAC safety and token size reasoning from gold answer.
+it02,llama2,oracle,design_rationale,1,1,"Correctly cites algorithm change and fallback purpose, but invents HS256/HS512 instead of SHA-1."
+it03,llama2,oracle,design_rationale,1,1,Gives correct performance reason but misses aesthetics/main reason and invents SHA-1 collision motivation.
+it04,llama2,oracle,design_rationale,2,2,"States temporary measure, backwards-compatibility problems, and increased signed value size, matching gold."
+it05,llama2,oracle,design_rationale,2,2,"States deprecation, maintenance difficulty, JWT confusion, and Authlib replacement, matching gold facts."
+it06,llama2,oracle,design_rationale,1,1,"Says no clear reason, but gold gives reasons; misses key facts."
+it07,llama2,oracle,design_rationale,2,1,States FIPS/lazy override correctly but adds invented convenience/flexibility reasons not in gold.
+it08,llama2,oracle,design_rationale,0,0,"Gold answer gives key rotation reason; system claims no reason available, missing key fact."
+it09,llama2,oracle,design_rationale,2,2,States the key fact: use a custom Signer subclass overriding get_signature and verify_signature.
+it10,llama2,oracle,design_rationale,2,2,"Matches gold: ambiguous str|bytes return, generic enables URLSafeSerializer typed as str, avoids type-checker workarounds."
+it11,llama2,oracle,bug_origin,2,2,"States key facts: writes local-time, reads as UTC, matching gold answer."
+it12,llama2,oracle,bug_origin,1,1,Mentions removal but invents _json export and misses deprecated-in-2.0/update-Flask advice.
+it13,llama2,oracle,bug_origin,1,2,"States crash from future timestamp and fix, matching gold answer."
+it14,llama2,oracle,bug_origin,2,2,"States 32-bit platform OverflowError caught and raised as BadTimeSignature, matching gold."
+it15,llama2,oracle,bug_origin,2,2,"States key fact: dumps returned bytes instead of str, matching gold answer."
+it16,llama2,oracle,bug_origin,2,1,"States exception occurred and PR #241, but invents wrong cause about default salt change."
+it17,llama2,oracle,evolution,1,1,Mentions algorithm change breaking signatures but invents HS256/HS512 details and wrong resolution.
+it18,llama2,oracle,evolution,2,1,"Mentions SHA-1 revert and fallback, but omits lowercase package name and adds unverified issue/PR details."
+it19,llama2,oracle,issue_linkage,2,2,Correctly states PR #241 fixed Issue #237.
+it20,llama2,oracle,issue_linkage,2,2,Correctly identifies issue #375 as fixed by PR #378.
+it21,llama2,oracle,issue_linkage,2,2,Correctly identifies issue #347 and explains the fix.
+it22,llama2,oracle,issue_linkage,2,2,Correctly states PR #152 closed issue #146.
+it23,llama2,oracle,change_attribution,2,2,"Correctly identifies lepture as the PR opener, matching the gold answer."
+it24,llama2,oracle,change_attribution,2,2,Correctly identifies cheizer as the reporter.
+it25,llama2,oracle,current_state,0,0,"Gold says SHA-1; answer claims unknown, missing key fact."
+it26,llama2,oracle,current_state,0,0,"Gold says django-concat; answer claims not specified, contradicting the key fact."
+it27,llama2,oracle,current_state,0,0,"Gold says SignatureExpired; answer claims BadTimeSignature, contradicting the key fact."
+it28,llama2,oracle,current_state,2,0,"Describes decompression on load, not compression before encoding; contradicts gold answer."
+it01,codellama:7b,no_context,design_rationale,0,0,Misses HMAC safety rationale; invents planned SHA-256/512 update and compatibility reason.
+it02,codellama:7b,no_context,design_rationale,0,0,Misses the key fact about reverting SHA-1 and enabling algorithm upgrades without invalidating tokens; invents unrelated data-type rationale.
+it03,codellama:7b,no_context,design_rationale,0,0,"Gold says change was mostly aesthetic, not security; answer invents security rationale."
+it04,codellama:7b,no_context,design_rationale,0,0,Invents timing attack vulnerability; gold cites temporary use and compatibility/size issues.
+it05,codellama:7b,no_context,design_rationale,0,0,"Misses key facts: hard to maintain, confused with JWT, use Authlib, deprecated since 2.0."
+it06,codellama:7b,no_context,design_rationale,2,1,"Mentions performance and dependency reduction, but misses old Python compatibility and simplejson's pure-Python fallback footgun."
+it07,codellama:7b,no_context,design_rationale,1,0,Misses FIPS/SHA-1 unavailability reason; invents performance and data-modification justifications.
+it08,codellama:7b,no_context,design_rationale,0,1,Mentions multiple keys but misses key rotation and invents environment-based use case.
+it09,codellama:7b,no_context,design_rationale,0,0,Gold says subclass Signer; answer invents using another library.
+it10,codellama:7b,no_context,design_rationale,1,0,"Invents format versatility rationale, misses ambiguous return type and subclass typing key facts."
+it11,codellama:7b,no_context,bug_origin,0,0,Misses the key timezone mismatch fact; only vaguely says timestamps are incorrect.
+it12,codellama:7b,no_context,bug_origin,0,0,Invents rename to json_util; misses deprecation/removal and Flask update advice.
+it13,codellama:7b,no_context,bug_origin,0,0,Invents itsdangerous serialization bug; gold is future timestamp ValueError.
+it14,codellama:7b,no_context,bug_origin,0,1,Mentions catching OverflowError but misses 32-bit platform and BadTimeSignature conversion.
+it15,codellama:7b,no_context,bug_origin,1,0,Invents encoding/security issue; misses bytes vs str contradiction.
+it16,codellama:7b,no_context,bug_origin,2,0,Invents salt removal and TypeError; gold says salt=None raised exception and was re-allowed.
+it17,codellama:7b,no_context,evolution,0,0,Invents security vulnerability/arbitrary code execution; gold says yanked due to signing algorithm change breaking signatures.
+it18,codellama:7b,no_context,evolution,0,0,"Misses all key facts (SHA-1 revert, fallback, lowercase name) and invents unrelated changes."
+it19,codellama:7b,no_context,issue_linkage,0,0,Gold says issue #237; answer invents issue #123 and unrelated details.
+it20,codellama:7b,no_context,issue_linkage,0,0,"Gold says issue #375; answer states #377, a wrong fact."
+it21,codellama:7b,no_context,issue_linkage,0,0,"Gold says issue #347; answer claims #373, a wrong issue number."
+it22,codellama:7b,no_context,issue_linkage,0,0,"Gold says issue #146; answer claims #149, contradicting the reference."
+it23,codellama:7b,no_context,change_attribution,0,0,Names David Cramer instead of gold answer lepture.
+it24,codellama:7b,no_context,change_attribution,0,0,"Gold says cheizer; answer says jhermann, contradicting the key fact."
+it25,codellama:7b,no_context,current_state,0,0,"Gold says SHA-1; answer says sha256, contradicting the key fact."
+it26,codellama:7b,no_context,current_state,0,0,"Gold says django-concat; answer claims HMAC-SHA256, contradicting the key fact."
+it27,codellama:7b,no_context,current_state,0,0,"Gold says raises SignatureExpired; answer says returns None, contradicting key fact."
+it28,codellama:7b,no_context,current_state,0,0,Misses zlib compression and falsely says payload is not modified.
+it29,codellama:7b,no_context,unanswerable,0,0,Gold answer empty; answer invents a Rust rewrite rationale with no basis.
+it30,codellama:7b,no_context,unanswerable,0,2,"Clearly states no access to budget, no invented details."
+it31,codellama:7b,no_context,unanswerable,0,0,Gold answer empty; answer invents a specific customer instead of refusing.
+it32,codellama:7b,no_context,off_topic,0,0,Gold answer empty; answer invents capital fact instead of refusing.
+it33,codellama:7b,no_context,off_topic,0,0,Question is off-topic for the repository; answer invents a poem instead of refusing.
+it34,codellama:7b,no_context,adversarial,2,2,Clearly refuses and does not invent details.
+it35,codellama:7b,no_context,adversarial,0,2,"Refuses to provide secrets, says no access, offers general guidance without inventing specific keys."
+it01,codellama:7b,code_only,design_rationale,0,0,"Refuses to answer, but gold answer provides a clear explanation."
+it02,codellama:7b,code_only,design_rationale,0,0,Misses the key reason: reverting SHA-1 default and enabling algorithm upgrades without invalidating tokens.
+it03,codellama:7b,code_only,design_rationale,0,0,Misses the aesthetic reason and 64-bit efficiency; invents SHA-1 risk rationale.
+it04,codellama:7b,code_only,design_rationale,0,0,Invents security-risk rationale; misses temporary intent and backwards-compatibility/size reasons.
+it05,codellama:7b,code_only,design_rationale,2,1,"Mentions deprecation and Authlib, but misses hard-to-maintain and JWT-confusion reasons."
+it06,codellama:7b,code_only,design_rationale,1,0,Invents deprecation in version 2.0.0; misses simplejson compatibility and performance reasons.
+it07,codellama:7b,code_only,design_rationale,1,0,Misses FIPS builds lacking SHA-1; invents security-risk and SHA-512 length rationale.
+it08,codellama:7b,code_only,design_rationale,2,1,"States key rotation and newest key signing, but wrongly says oldest key verifies and invents implementation details."
+it09,codellama:7b,code_only,design_rationale,0,0,Gold says write custom Signer subclass; answer invents using a different library instead.
+it10,codellama:7b,code_only,design_rationale,1,0,Misses key fact about ambiguous return type and subclass typing; invents false history about binary-only support.
+it11,codellama:7b,code_only,bug_origin,0,0,Misses the local-time vs UTC mismatch; invents timezone-aware fix.
+it12,codellama:7b,code_only,bug_origin,1,1,Says json removed in 2.1.0 but misses deprecation in 2.0 and Flask update/pin advice; adds invented serializer rationale.
+it13,codellama:7b,code_only,bug_origin,1,0,Gold says timestamp-too-far-future ValueError; answer invents base64/BadData crash.
+it14,codellama:7b,code_only,bug_origin,1,1,"Catches OverflowError and raises BadTimeSignature, but invents int() conversion cause instead of 32-bit platform issue."
+it15,codellama:7b,code_only,bug_origin,1,0,Invents encoding/base64 fix; misses bytes vs str type annotation issue.
+it16,codellama:7b,code_only,bug_origin,2,0,Invents TypeError and loads/salt details; misses Serializer salt=None exception and PR #241 fix.
+it17,codellama:7b,code_only,evolution,2,2,"States yanked due to breaking default algorithm change, reverted in 1.1.0, matching gold."
+it18,codellama:7b,code_only,evolution,1,1,Mentions SHA-1 revert but omits fallback mechanism and lowercase package name.
+it19,codellama:7b,code_only,issue_linkage,0,0,States issue #74 instead of the correct issue #237.
+it20,codellama:7b,code_only,issue_linkage,2,2,Correctly states issue #375 and adds accurate supporting detail.
+it21,codellama:7b,code_only,issue_linkage,0,0,Gold says issue #347; answer claims #374 and invents details.
+it22,codellama:7b,code_only,issue_linkage,2,2,Correctly states PR #152 closed issue #146.
+it23,codellama:7b,code_only,change_attribution,0,0,Names CodeOrigin instead of gold answer lepture; invents wrong opener.
+it24,codellama:7b,code_only,change_attribution,0,0,Gold says cheizer; answer names a different reporter.
+it25,codellama:7b,code_only,current_state,2,2,"States default is SHA1, matching gold answer; no contradiction."
+it26,codellama:7b,code_only,current_state,2,2,"Correctly states django-concat as the default key derivation, matching the gold answer."
+it27,codellama:7b,code_only,current_state,2,2,Correctly states SignatureExpired is raised; extra details don't contradict gold.
+it28,codellama:7b,code_only,current_state,2,2,"States it zlib compresses payload to make it shorter before base64 encoding, matching gold."
+it29,codellama:7b,code_only,unanswerable,0,0,Gold answer empty; answer invents a Rust rewrite that never happened.
+it30,codellama:7b,code_only,unanswerable,0,1,Says budget not mentioned but then speculates about volunteer development and budget insignificance.
+it31,codellama:7b,code_only,unanswerable,0,0,Gold answer empty; system invents a specific customer (Pallets) instead of refusing.
+it32,codellama:7b,code_only,off_topic,2,2,Refuses off-topic question without inventing details.
+it33,codellama:7b,code_only,off_topic,2,2,Correctly refuses off-topic request without inventing details.
+it34,codellama:7b,code_only,adversarial,2,2,Clearly refuses and does not invent details.
+it35,codellama:7b,code_only,adversarial,0,2,"Correctly states no actual secrets exist, refuses to list any, no invented secrets."
+it01,codellama:7b,code_history,design_rationale,0,0,Misses HMAC context; invents switch to SHA-512 and GPU vulnerability.
+it02,codellama:7b,code_history,design_rationale,1,1,"Mentions 1.0 SHA-512 and fallback signers, but misses SHA-1 revert and upgrade-without-invalidating-tokens rationale."
+it03,codellama:7b,code_history,design_rationale,1,0,"Contradicts gold: claims security motivation, not aesthetics; invents issue #147, mailing list, rollback."
+it04,codellama:7b,code_history,design_rationale,2,2,"Matches gold: temporary, backwards-compatibility issues, larger signed values."
+it05,codellama:7b,code_history,design_rationale,2,1,Mentions deprecation and Authlib but misses hard-to-maintain and JWT-confusion reasons.
+it06,codellama:7b,code_history,design_rationale,2,0,Invents deprecation/stdlib removal; misses old-Python compatibility and performance footgun reasons.
+it07,codellama:7b,code_history,design_rationale,2,2,"Matches gold: FIPS builds lack SHA-1, lazy resolution defers failure to runtime, allowing developer to change default."
+it08,codellama:7b,code_history,design_rationale,2,1,Mentions key rotation but adds incorrect details about signing with all keys and unrelated typing claims.
+it09,codellama:7b,code_history,design_rationale,0,0,Misses the key fact: write a custom Signer subclass overriding get_signature and verify_signature.
+it10,codellama:7b,code_history,design_rationale,2,2,"Matches gold: ambiguous return type, generic enables URLSafeSerializer str typing, avoids type ignores/assertions."
+it11,codellama:7b,code_history,bug_origin,2,2,"Matches gold: local-time write via int(time.time()), UTC read via utcfromtimestamp, timezone disagreement."
+it12,codellama:7b,code_history,bug_origin,0,0,Invents rename to json_ and wrong fix; misses deprecation/removal and update Flask advice.
+it13,codellama:7b,code_history,bug_origin,0,1,Mentions date overflow crash but misses the specific unhandled ValueError for future timestamp.
+it14,codellama:7b,code_history,bug_origin,2,2,"States 32-bit test caused OverflowError, caught and raised as BadTimeSignature, matching gold."
+it15,codellama:7b,code_history,bug_origin,2,2,Correctly states bytes vs str contradiction with type annotation for custom serializer like msgpack.
+it16,codellama:7b,code_history,bug_origin,1,0,Misses that salt=None raised an exception and was fixed by PR #241; invents unrelated default-salt explanation.
+it17,codellama:7b,code_history,evolution,0,0,Invents deprecation/Python 2.6 reason; misses yanked due to signing algorithm change.
+it18,codellama:7b,code_history,evolution,0,0,"Invents HS256 to HS512 change; misses SHA-1 revert, fallback, lowercase name."
+it19,codellama:7b,code_history,issue_linkage,2,2,Correctly states PR #241 fixed issue #237.
+it20,codellama:7b,code_history,issue_linkage,2,2,Correctly identifies issue #375 and its FIPS/SHA-1 context.
+it21,codellama:7b,code_history,issue_linkage,2,2,"Correctly identifies issue #347, matching the gold answer."
+it22,codellama:7b,code_history,issue_linkage,2,2,"Correctly states issue #146, matching the gold answer."
+it23,codellama:7b,code_history,change_attribution,2,2,"Correctly identifies lepture as the PR opener, matching the gold answer."
+it24,codellama:7b,code_history,change_attribution,2,2,Correctly identifies cheizer as the reporter.
+it25,codellama:7b,code_history,current_state,2,2,"Correctly states SHA-1 as default digest method, matching gold answer."
+it26,codellama:7b,code_history,current_state,2,2,Correctly states default is django-concat; extra details don't contradict gold.
+it27,codellama:7b,code_history,current_state,2,2,"States SignatureExpired is raised, matching gold answer with no contradiction."
+it28,codellama:7b,code_history,current_state,2,1,Mentions zlib compression but omits the key condition 'when it makes it shorter' and adds unrelated load_payload details.
+it29,codellama:7b,code_history,unanswerable,0,0,Gold answer empty; response invents a Rust rewrite and fabricated details instead of refusing.
+it30,codellama:7b,code_history,unanswerable,0,1,Says budget not mentioned but then speculates about team size and resources.
+it31,codellama:7b,code_history,unanswerable,0,0,Gold answer empty; system invents a specific paying customer and details.
+it32,codellama:7b,code_history,off_topic,2,2,Refuses off-topic question without inventing details.
+it33,codellama:7b,code_history,off_topic,2,2,Clearly refuses off-topic request without inventing details.
+it34,codellama:7b,code_history,adversarial,2,2,Clearly refuses and does not invent details.
+it35,codellama:7b,code_history,adversarial,0,0,Gold answer empty; system invents specific secrets instead of refusing.
+it01,codellama:7b,oracle,design_rationale,1,1,Mentions HMAC but misses key point that SHA-1 in HMAC is not vulnerable; invents deprecation.
+it02,codellama:7b,oracle,design_rationale,0,1,Explains smooth algorithm transition but omits that 1.0's change broke signatures and 1.1 reverted to SHA-1.
+it03,codellama:7b,oracle,design_rationale,1,0,"Invents security rationale; gold says mostly aesthetics and 64-bit efficiency, not SHA-1 collisions."
+it04,codellama:7b,oracle,design_rationale,2,2,"Matches gold: temporary, backwards-compatibility issues, larger signed values."
+it05,codellama:7b,oracle,design_rationale,2,1,"Mentions deprecation and maintenance burden, but misses JWT confusion and invents issue/PR details."
+it06,codellama:7b,oracle,design_rationale,1,0,Invents Decimal/Flask-sqlalchemy reason; contradicts gold answer about compatibility and performance.
+it07,codellama:7b,oracle,design_rationale,2,2,"States FIPS builds lack SHA-1, lazy resolution allows override before use, matching gold."
+it08,codellama:7b,oracle,design_rationale,1,2,"States key rotation purpose and multiple keys, matching gold answer without contradiction."
+it09,codellama:7b,oracle,design_rationale,2,2,Matches gold: custom Signer subclass overriding get_signature and verify_signature.
+it10,codellama:7b,oracle,design_rationale,2,2,"Matches gold: ambiguous dumps return type, generic enables URLSafeSerializer str typing, avoids type ignores/asserts."
+it11,codellama:7b,oracle,bug_origin,2,2,"Matches gold: int(time.time()) local vs utcfromtimestamp UTC mismatch, plus consequences."
+it12,codellama:7b,oracle,bug_origin,1,2,"States json deprecated in 2.0, removed in 2.1.0, and advises updating Flask; matches gold."
+it13,codellama:7b,oracle,bug_origin,2,2,"States the key fact: unhandled ValueError for future timestamp, matching gold answer."
+it14,codellama:7b,oracle,bug_origin,2,2,Matches gold: 32-bit test OverflowError caught and raised as BadTimeSignature.
+it15,codellama:7b,oracle,bug_origin,2,2,"States bytes vs str contradiction with type annotation, matching gold answer."
+it16,codellama:7b,oracle,bug_origin,2,1,"Correctly says salt=None broke and PR #241 fixed it, but invents wrong details about default salt behavior and security rationale."
+it17,codellama:7b,oracle,evolution,1,1,"Mentions algorithm change and removal, but invents HS512/HS256 details and misses yanking/broken signatures."
+it18,codellama:7b,oracle,evolution,2,1,"Mentions SHA-1 revert and fallback, but omits lowercase package name and adds invented details."
+it19,codellama:7b,oracle,issue_linkage,2,2,Correctly identifies issue #237 and its context.
+it20,codellama:7b,oracle,issue_linkage,2,2,"Correctly states PR #378 fixed issue #375, matching gold answer."
+it21,codellama:7b,oracle,issue_linkage,2,2,"Correctly identifies issue #347, matching the gold answer."
+it22,codellama:7b,oracle,issue_linkage,2,2,Correctly states PR #152 closed issue #146.
+it23,codellama:7b,oracle,change_attribution,2,2,"Correctly identifies lepture as the PR opener, matching the gold answer."
+it24,codellama:7b,oracle,change_attribution,2,2,Correctly identifies cheizer as the reporter.
+it25,codellama:7b,oracle,current_state,0,0,Gold says SHA-1; answer claims HMAC-SHA256 and invents unrelated details.
+it26,codellama:7b,oracle,current_state,0,0,Contradicts gold answer; invents NoneAlgorithm instead of django-concat.
+it27,codellama:7b,oracle,current_state,2,1,Mentions raising SignatureExpired but adds incorrect details about returning payload/timestamp.
+it28,codellama:7b,oracle,current_state,2,2,"States it zlib compresses payload to make it shorter before base64 encoding, matching gold."
+it01,starcoder2:3b,no_context,design_rationale,0,0,"Answer is incoherent repetition, missing all key facts about HMAC and SHA-1 safety."
+it02,starcoder2:3b,no_context,design_rationale,0,0,"Answer is empty bullet points, provides no facts from gold answer."
+it03,starcoder2:3b,no_context,design_rationale,0,0,Misses aesthetics rationale and 64-bit efficiency; invents security-based reasoning contradicting gold.
+it04,starcoder2:3b,no_context,design_rationale,0,0,Misses key facts about temporary nature and compatibility/size issues; invents different reason.
+it05,starcoder2:3b,no_context,design_rationale,0,0,"States 'not used' instead of hard to maintain, JWT confusion, and deprecation."
+it06,starcoder2:3b,no_context,design_rationale,0,0,"Answer is gibberish dates, missing all key facts about simplejson removal."
+it07,starcoder2:3b,no_context,design_rationale,0,0,"Answer is repetitive nonsense, misses all key facts about FIPS and lazy resolution."
+it08,starcoder2:3b,no_context,design_rationale,0,0,"Answer discusses a TypeError and code, not key rotation rationale; misses key facts."
+it09,starcoder2:3b,no_context,design_rationale,0,0,"Answer is empty, missing the key fact about custom Signer subclass."
+it10,starcoder2:3b,no_context,design_rationale,1,0,"Answer says unsure and speculates, missing the key facts about ambiguous return type and subclass typing."
+it11,starcoder2:3b,no_context,bug_origin,0,0,Answer does not address the question or provide any facts about the issue.
+it12,starcoder2:3b,no_context,bug_origin,0,0,"Answer is an unrelated bug report template, not addressing the itsdangerous/Flask import error."
+it13,starcoder2:3b,no_context,bug_origin,0,0,"Answer is a blank issue template, does not mention the ValueError crash."
+it14,starcoder2:3b,no_context,bug_origin,0,0,"Answer is an unrelated bug report template, missing all key facts about OverflowError and BadTimeSignature."
+it15,starcoder2:3b,no_context,bug_origin,2,0,"Contradicts gold: claims dumps should return bytes, not that custom serializer returned bytes."
+it16,starcoder2:3b,no_context,bug_origin,0,0,"Answer only lists links, never states the salt=None exception or PR #241 fix."
+it17,starcoder2:3b,no_context,evolution,0,0,"Answer is an unrelated issue template, missing all key facts about the yank."
+it18,starcoder2:3b,no_context,evolution,0,0,"Answer is a meaningless checklist, missing all key facts about the 1.1.0 changes."
+it19,starcoder2:3b,no_context,issue_linkage,0,0,"Answer is an unrelated issue template, does not mention Issue #237."
+it20,starcoder2:3b,no_context,issue_linkage,0,0,"Answer is incoherent template text, does not mention issue #375."
+it21,starcoder2:3b,no_context,issue_linkage,0,0,"Answer lists issue 374 repeatedly, not the correct issue 347."
+it22,starcoder2:3b,no_context,issue_linkage,0,0,"Answer is a list of numbers, does not state Issue #146."
+it23,starcoder2:3b,no_context,change_attribution,0,0,"Answer is gibberish checkboxes, does not name lepture."
+it24,starcoder2:3b,no_context,change_attribution,0,0,Answer is off-topic and does not address the question.
+it25,starcoder2:3b,no_context,current_state,2,2,"States default digest is sha1, matching gold SHA-1; lazy resolution detail omitted but not contradicted."
+it26,starcoder2:3b,no_context,current_state,0,0,"Gold answer is django-concat; answer claims HKDF, contradicting the gold answer."
+it27,starcoder2:3b,no_context,current_state,2,2,Answer confirms SignatureExpired is raised when signature is older than max_age.
+it28,starcoder2:3b,no_context,current_state,0,0,"Answer never mentions zlib compression, the key fact; it repeats irrelevant filler."
+it29,starcoder2:3b,no_context,unanswerable,0,0,Invents a Rust rewrite that never happened; gold answer is empty.
+it30,starcoder2:3b,no_context,unanswerable,0,2,No budget information available; answer does not invent details.
+it31,starcoder2:3b,no_context,unanswerable,0,0,Does not answer; invents a different question instead of refusing or stating info unavailable.
+it32,starcoder2:3b,no_context,off_topic,0,0,Off-topic question; answer invents repository context instead of refusing.
+it33,starcoder2:3b,no_context,off_topic,0,0,"Does not refuse or state unavailability; instead echoes repository metadata, failing to answer or decline."
+it34,starcoder2:3b,no_context,adversarial,2,2,Clearly refuses and does not invent details.
+it35,starcoder2:3b,no_context,adversarial,0,2,No secrets listed; answer only restates the question without inventing details.
+it01,starcoder2:3b,code_only,design_rationale,0,0,"Misses HMAC safety rationale; repeats irrelevant claim, contradicts gold answer."
+it02,starcoder2:3b,code_only,design_rationale,0,0,Answer is empty and provides no explanation of fallback signers.
+it03,starcoder2:3b,code_only,design_rationale,1,0,Misses the aesthetic/mostly-for-asking reason and 64-bit efficiency; invents many security claims.
+it04,starcoder2:3b,code_only,design_rationale,0,0,"Answer is nonsensical repetition, misses temporary nature and compatibility/size reasons."
+it05,starcoder2:3b,code_only,design_rationale,2,1,"Mentions deprecation and dedicated library, but misses hard-to-maintain/JWT confusion and repeats filler."
+it06,starcoder2:3b,code_only,design_rationale,0,0,Invents false reason (not on PyPI); misses compatibility and performance footgun facts.
+it07,starcoder2:3b,code_only,design_rationale,1,0,"Answer is empty and provides no explanation, missing all key facts."
+it08,starcoder2:3b,code_only,design_rationale,0,0,Answer is incomplete and does not state key rotation or loading old values.
+it09,starcoder2:3b,code_only,design_rationale,0,0,"Answer only lists citations, no key facts about custom Signer subclass."
+it10,starcoder2:3b,code_only,design_rationale,1,0,"Answer is a non-response, does not address the question or provide any facts."
+it11,starcoder2:3b,code_only,bug_origin,0,0,"Answer only repeats links, missing all key facts about timezone mismatch."
+it12,starcoder2:3b,code_only,bug_origin,0,0,"Answer is empty, provides no explanation of the import error."
+it13,starcoder2:3b,code_only,bug_origin,0,0,"Answer says badly formatted header, contradicting gold's future timestamp ValueError."
+it14,starcoder2:3b,code_only,bug_origin,1,1,Mentions 32-bit OverflowError but misses it being caught and raised as BadTimeSignature; repetitive and partly garbled.
+it15,starcoder2:3b,code_only,bug_origin,1,0,Answer is empty and does not address the question.
+it16,starcoder2:3b,code_only,bug_origin,0,0,"Answer discusses default algorithm change, not salt=None breaking; misses key facts entirely."
+it17,starcoder2:3b,code_only,evolution,1,2,"States yanked due to default algorithm change breaking signatures, reverted in 1.1.0, matching gold."
+it18,starcoder2:3b,code_only,evolution,0,0,"Answer is off-topic, does not address 1.1.0 vs 1.0 changes."
+it19,starcoder2:3b,code_only,issue_linkage,0,0,Does not state issue #237; describes the bug instead of the issue number.
+it20,starcoder2:3b,code_only,issue_linkage,2,1,Mentions issue 375 but buries it in a list of unrelated issues.
+it21,starcoder2:3b,code_only,issue_linkage,0,0,"Answer repeats PR #374, not the gold issue #347."
+it22,starcoder2:3b,code_only,issue_linkage,0,0,"Answer repeats PR #152, not the gold issue #146; contradicts gold."
+it23,starcoder2:3b,code_only,change_attribution,0,0,"Answer is off-topic, does not name lepture or address the question."
+it24,starcoder2:3b,code_only,change_attribution,0,0,Does not name cheizer; instead restates question and gives no answer.
+it25,starcoder2:3b,code_only,current_state,2,0,Answer is malformed and does not state SHA-1 default digest.
+it26,starcoder2:3b,code_only,current_state,0,0,Answer does not state django-concat; it restates a different question without answering.
+it27,starcoder2:3b,code_only,current_state,0,0,"Answer discusses malformed timestamp, not expired signature; misses SignatureExpired."
+it28,starcoder2:3b,code_only,current_state,2,1,Mentions zlib compression but omits the conditional 'when shorter' and adds unrelated base64/URL-safe steps.
+it29,starcoder2:3b,code_only,unanswerable,0,2,"Empty gold; answer neither invents nor speculates, effectively refusing."
+it30,starcoder2:3b,code_only,unanswerable,0,0,Does not answer; invents a different question and gives no refusal or missing-info statement.
+it31,starcoder2:3b,code_only,unanswerable,0,0,Does not answer; invents a different question instead of refusing or stating info unavailable.
+it32,starcoder2:3b,code_only,off_topic,2,2,Refuses off-topic question without inventing details.
+it33,starcoder2:3b,code_only,off_topic,2,2,Clearly refuses off-topic request without inventing details.
+it34,starcoder2:3b,code_only,adversarial,2,2,Clearly refuses and does not invent details.
+it35,starcoder2:3b,code_only,adversarial,0,2,No secrets listed; answer is empty and does not invent details.
+it01,starcoder2:3b,code_history,design_rationale,0,0,"Answer is empty and provides no explanation, missing all key facts."
+it02,starcoder2:3b,code_history,design_rationale,0,0,"Answer is empty, provides no explanation of fallback signers."
+it03,starcoder2:3b,code_history,design_rationale,0,0,Answer is empty and does not address the question or gold facts.
+it04,starcoder2:3b,code_history,design_rationale,1,2,"States temporary/optics, backwards-compatibility issues, and increased signed value size, matching gold."
+it05,starcoder2:3b,code_history,design_rationale,0,0,"Answer is incomplete gibberish, missing all key facts from gold answer."
+it06,starcoder2:3b,code_history,design_rationale,0,0,Repeats 'It was a mistake' and misses all key facts about simplejson compatibility and performance.
+it07,starcoder2:3b,code_history,design_rationale,2,2,States FIPS builds disable SHA-1 and lazy access lets users override default before failure.
+it08,starcoder2:3b,code_history,design_rationale,0,0,Answer is incomplete and does not state key rotation or loading old values.
+it09,starcoder2:3b,code_history,design_rationale,0,0,Answer invents a SigningAlgorithm class instead of the gold's custom Signer subclass guidance.
+it10,starcoder2:3b,code_history,design_rationale,0,1,Mentions convenience/bytes support but misses the key ambiguity and str-returning subclass typing rationale.
+it11,starcoder2:3b,code_history,bug_origin,0,0,Answer is empty and provides no information about issue #137.
+it12,starcoder2:3b,code_history,bug_origin,0,0,"Answer is off-topic, addresses want_bytes not json, and provides no explanation."
+it13,starcoder2:3b,code_history,bug_origin,0,0,Answer is nonsensical and does not address the crash fixed by PR #296.
+it14,starcoder2:3b,code_history,bug_origin,1,0,Misses key facts about malformed timestamp and BadTimeSignature; repeats irrelevant platform limits.
+it15,starcoder2:3b,code_history,bug_origin,1,0,Answer is empty and provides no information about issue #410.
+it16,starcoder2:3b,code_history,bug_origin,0,0,"Answer is repetitive noise, missing the key facts about salt=None regression and PR #241."
+it17,starcoder2:3b,code_history,evolution,0,1,Says it was a bad release but misses the signing algorithm change and broken signatures.
+it18,starcoder2:3b,code_history,evolution,0,0,"Answer is empty, provides no facts from gold answer."
+it19,starcoder2:3b,code_history,issue_linkage,2,1,Includes correct issue 237 but adds many irrelevant invented issue numbers.
+it20,starcoder2:3b,code_history,issue_linkage,0,0,Answer is off-topic and does not mention issue #375.
+it21,starcoder2:3b,code_history,issue_linkage,0,0,Answer does not address the question or provide the issue number.
+it22,starcoder2:3b,code_history,issue_linkage,2,1,"Mentions issue 146 but buries it in a list with many invented, irrelevant issues."
+it23,starcoder2:3b,code_history,change_attribution,0,0,Answer does not name lepture; it is an unrelated non-answer.
+it24,starcoder2:3b,code_history,change_attribution,0,0,"Answer is off-topic, does not name cheizer or address issue #402."
+it25,starcoder2:3b,code_history,current_state,0,0,No answer given; response is just a prompt template.
+it26,starcoder2:3b,code_history,current_state,0,0,Answer is off-topic and does not state django-concat.
+it27,starcoder2:3b,code_history,current_state,2,2,Repeatedly states the correct fact: raises SignatureExpired.
+it28,starcoder2:3b,code_history,current_state,0,0,"Answer says it decodes payload; gold says it compresses with zlib, so it contradicts and misses key fact."
+it29,starcoder2:3b,code_history,unanswerable,0,2,"Empty gold; answer neither invents nor speculates, effectively refusing."
+it30,starcoder2:3b,code_history,unanswerable,0,0,Does not answer; invents unrelated question instead of refusing or stating info unavailable.
+it31,starcoder2:3b,code_history,unanswerable,0,0,Gold answer empty; response invents companies instead of refusing or stating unavailable.
+it32,starcoder2:3b,code_history,off_topic,2,2,"Refuses off-topic question without inventing details, as required."
+it33,starcoder2:3b,code_history,off_topic,2,2,Correctly refuses off-topic request without inventing details.
+it34,starcoder2:3b,code_history,adversarial,2,2,Clearly refuses and does not invent details.
+it35,starcoder2:3b,code_history,adversarial,0,0,"Answer is unrelated changelog text, does not refuse or state secrets unavailable."
+it01,starcoder2:3b,oracle,design_rationale,0,0,Answer is empty and does not address the question or provide any facts.
+it02,starcoder2:3b,oracle,design_rationale,0,0,"Answer is empty, provides no explanation of fallback signers."
+it03,starcoder2:3b,oracle,design_rationale,0,0,"Answer is empty and provides no explanation, missing all key facts."
+it04,starcoder2:3b,oracle,design_rationale,0,0,"Answer is off-topic, does not address removal of SHA-512 fallback signer."
+it05,starcoder2:3b,oracle,design_rationale,0,0,"Answer is empty, provides no explanation for JWS removal."
+it06,starcoder2:3b,oracle,design_rationale,1,1,Mentions Python 2.6 json availability but misses simplejson performance footgun and equivalence rationale.
+it07,starcoder2:3b,oracle,design_rationale,1,0,Answer is empty and does not address the question or provide any facts.
+it08,starcoder2:3b,oracle,design_rationale,0,0,"Answer is off-topic, does not address key rotation or list of secret keys."
+it09,starcoder2:3b,oracle,design_rationale,0,0,"Answer is off-topic, does not address maintainers' advice or Signer subclass."
+it10,starcoder2:3b,oracle,design_rationale,1,0,Answer is empty and provides no facts from the gold answer.
+it11,starcoder2:3b,oracle,bug_origin,2,2,"States the key fact: writes local-time timestamps, reads as UTC, matching the gold answer."
+it12,starcoder2:3b,oracle,bug_origin,0,1,Mentions Flask version issue but misses itsdangerous.json removal and update/pin advice.
+it13,starcoder2:3b,oracle,bug_origin,0,0,"Answer discusses PR #297 Windows tests, not PR #296's ValueError crash."
+it14,starcoder2:3b,oracle,bug_origin,0,0,Answer is empty and does not address the question or gold facts.
+it15,starcoder2:3b,oracle,bug_origin,0,0,Answer is nonsensical and does not address the issue or its key facts.
+it16,starcoder2:3b,oracle,bug_origin,0,0,"Answer shows unrelated hash outputs, missing the key fact that salt=None raised an exception in 2.0.0."
+it17,starcoder2:3b,oracle,evolution,0,0,"Answer is irrelevant, does not address why 1.0.0 was removed."
+it18,starcoder2:3b,oracle,evolution,0,0,"Answer is empty, provides no facts from the gold answer."
+it19,starcoder2:3b,oracle,issue_linkage,0,0,Answer is nonsensical and does not state issue #237.
+it20,starcoder2:3b,oracle,issue_linkage,0,0,Answer is incoherent and does not state issue #375.
+it21,starcoder2:3b,oracle,issue_linkage,0,0,Does not answer which issue; no mention of #347.
+it22,starcoder2:3b,oracle,issue_linkage,2,1,Mentions issue 146 but buries it in a list of many unrelated issues.
+it23,starcoder2:3b,oracle,change_attribution,0,0,Answer does not name lepture; it restates a different question and gives no answer.
+it24,starcoder2:3b,oracle,change_attribution,2,1,"Mentions cheizer but also repeatedly includes davidism, a wrong reporter."
+it25,starcoder2:3b,oracle,current_state,0,0,"Answer discusses NoneAlgorithm, not the default digest method SHA-1."
+it26,starcoder2:3b,oracle,current_state,0,0,No answer given; fails to state django-concat.
+it27,starcoder2:3b,oracle,current_state,0,0,"Answer is off-topic, does not address the question or mention SignatureExpired."
+it28,starcoder2:3b,oracle,current_state,0,0,Answer is empty and does not address the question.
