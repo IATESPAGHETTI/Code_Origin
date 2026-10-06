@@ -266,30 +266,119 @@ function SlideHealth() {
   )
 }
 
+function SlideMethod() {
+  const cols = [
+    ['Data', ['43 questions: 23 dev, 20 held-out test', 'Categories: design rationale, bug history, evolution, current state (control), off-topic / unanswerable', 'Gold evidence + key facts per question; dataset hash b96ac1b512bac60f', 'Thresholds tuned on dev only; test untouched']],
+    ['Metrics', ['Correctness: share of key facts present (refusal scored for unanswerable)', 'Evidence recall / precision of retrieval', 'Citation rate and validity', 'Unsupported-sentence ratio (G4)', 'Failure taxonomy per wrong answer']],
+    ['Statistics', ['Bootstrap 95% confidence intervals', 'Paired sign-flip permutation test', "Cohen's d_z effect size", 'Quadratic-weighted kappa + Spearman for judge vs human', 'Reported per category, never one blended score']],
+    ['Reproducibility', ['Temperature 0, seed 42, 300-token cap, 6000-char budget, top-k 8', 'Same prompt shape in every mode', 'Models, settings and dataset hash stored with every run', 'One command to start the stack; scripts/run_eval.py to evaluate']],
+  ]
+  return (
+    <div>
+      <Title eyebrow="Methodology" sub="Everything that could change the answer is held constant, so a difference can only come from the evidence shown.">
+        How the experiment is built
+      </Title>
+      <div className="grid gap-4 md:grid-cols-4">
+        {cols.map(([t, items]) => (
+          <div key={t} className="panel">
+            <div className="text-xl font-semibold" style={{ color: 'var(--accent)' }}>{t}</div>
+            <ul className="mt-2 list-disc space-y-1.5 pl-5 text-base">{items.map((x) => <li key={x}>{x}</li>)}</ul>
+          </div>
+        ))}
+      </div>
+      <p className="mt-5 text-base muted">Full write-up: docs/EVALUATION.md in the repository.</p>
+    </div>
+  )
+}
+
+function SlideInterpretation() {
+  const head = ['Model', 'No context', 'Code only', 'Code + history', 'History effect [95% CI]', 'Verdict', 'Oracle']
+  const rows = [
+    ['llama2', '26%', '67%', '91%', '+0.42 [+0.15, +0.69], p 0.023', 'Useful', '100%'],
+    ['codellama:7b', '30%', '67%', '91%', '+0.42 [0.00, +0.73]', 'Inconclusive', '88%'],
+    ['starcoder2:3b', '17%', '41%', '46%', '+0.08 [0.00, +0.19]', 'Inconclusive', '19%'],
+  ]
+  return (
+    <div>
+      <Title eyebrow="Results and interpretation" sub="Run #5: dev split, 255 answers, real local models. History effect = code_history minus code_only on the 13 history questions.">
+        What the numbers mean
+      </Title>
+      <div className="panel overflow-x-auto !p-0">
+        <table className="w-full text-left text-lg">
+          <thead><tr className="muted text-base">{head.map((h) => <th key={h} className="px-4 py-3 font-medium">{h}</th>)}</tr></thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr key={r[0]} className="border-t" style={{ borderColor: 'var(--line)' }}>
+                {r.map((c, k) => <td key={k} className={`px-4 py-3 ${k === 0 || k === 5 ? 'font-semibold' : ''}`}>{c}</td>)}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="mt-5 grid gap-4 text-lg md:grid-cols-3">
+        <div className="panel"><b>History helps capable models.</b><p className="mt-1 text-base muted">Evidence recall rises from 0.19 (code only) to 1.00 (with history), and correctness follows.</p></div>
+        <div className="panel"><b>Same effect is not the same verdict.</b><p className="mt-1 text-base muted">codellama has the same +0.42, but its interval touches 0. That means not enough evidence, not no effect.</p></div>
+        <div className="panel"><b>The oracle separates causes.</b><p className="mt-1 text-base muted">With perfect evidence starcoder2 still scores 19%: its weakness is using evidence, not finding it.</p></div>
+      </div>
+    </div>
+  )
+}
+
+function SlideFailures() {
+  const items = [
+    ['Model ignores evidence', 'starcoder2:3b is a code-completion model: 11 of 16 oracle answers copied or invented instead of answering.', 'Choose an instruction-tuned model.'],
+    ['Invented or missing citations', 'llama2 cited in 3 of 23 history answers, codellama 5 of 23. G3 strips invented refs; the low rate is real (only 4 of 186 answers changed after fixing citation parsing).', 'Stricter prompt format; measure with humans.'],
+    ['Vague questions retrieve badly', '"Tell me about all 3 commits" can return code and docs instead of commit chunks, and the model fills the gap.', 'Commit-aware retrieval (not done).'],
+    ['Judge too lenient', 'The gemma:2b jury gave 100% to every model, even the weakest, so it is not trusted.', 'Human grading and kappa first.'],
+    ['Heuristic grounding check', 'G4 red highlights flag weakly supported sentences; the threshold is not yet validated against humans.', 'Calibrate on human labels.'],
+  ]
+  return (
+    <div>
+      <Title eyebrow="Failure analysis" sub="Each failure was found in real output, traced to a cause, and either guarded against or listed as future work.">
+        Where it goes wrong
+      </Title>
+      <div className="panel overflow-x-auto !p-0">
+        <table className="w-full text-left text-base">
+          <thead><tr className="muted"><th className="px-4 py-3 font-medium">Failure</th><th className="px-4 py-3 font-medium">Evidence</th><th className="px-4 py-3 font-medium">Response</th></tr></thead>
+          <tbody>
+            {items.map(([f, e, r]) => (
+              <tr key={f} className="border-t align-top" style={{ borderColor: 'var(--line)' }}>
+                <td className="px-4 py-3 font-semibold">{f}</td><td className="px-4 py-3">{e}</td><td className="px-4 py-3 muted">{r}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
+
 function SlideLimits() {
   return (
     <div>
-      <Title eyebrow="Honest limits" sub="What the evidence does and does not support.">
-        What we would do next
+      <Title eyebrow="Limitations and threats to validity" sub="What the evidence does and does not support.">
+        Honest limits, and what comes next
       </Title>
       <div className="grid gap-4 md:grid-cols-2 text-lg">
         <div className="panel"><b>Limits</b>
           <ul className="mt-2 list-disc space-y-1 pl-5 muted">
-            <li>Evaluated on a seeded demo repository, dev split, automatic scoring.</li>
-            <li>The LLM jury is too lenient to trust until compared with human grades.</li>
+            <li><b>Circularity:</b> the demo repository, its history and the questions were written together, so history questions favour history by design.</li>
+            <li>Small sample: 13 history questions, 3 control; wide intervals.</li>
+            <li>Automatic key-fact scoring; no human grades yet. The LLM jury is too lenient.</li>
+            <li>One repository, small local models on a 6 GB GPU.</li>
             <li>Guardrail thresholds rest on very few negative examples.</li>
-            <li>Small local models; one GPU with 6 GB.</li>
           </ul>
         </div>
-        <div className="panel"><b>Next</b>
+        <div className="panel"><b>Next steps</b>
           <ul className="mt-2 list-disc space-y-1 pl-5 muted">
-            <li>Test on a real repository with 40+ human-verified questions.</li>
-            <li>Human-grade about 60 answers; measure judge agreement.</li>
-            <li>One held-out run, then the final analysis.</li>
-            <li>Publish tagged images through the release pipeline.</li>
+            <li>Real repository with independent history (pallets/itsdangerous is indexed) and 30-40 human-verified questions.</li>
+            <li>Human-grade about 60 answers; report judge-human kappa.</li>
+            <li>One held-out run with settings frozen.</li>
+            <li>Commit-aware retrieval for vague questions; larger model comparison.</li>
           </ul>
         </div>
       </div>
+      <p className="mt-5 text-base muted">We claim the result is promising, not proven.</p>
     </div>
   )
 }
@@ -308,8 +397,9 @@ function SlideEnd() {
 }
 
 const SLIDES = [
-  ['Title', SlideTitle], ['Problem', SlideProblem], ['Research design', SlideResearch], ['Architecture', SlideArchitecture],
-  ['Question flow', SlideFlow], ['DevOps', SlideDevOps], ['CI/CD', SlideCI], ['Results', SlideResults],
+  ['Title', SlideTitle], ['Problem', SlideProblem], ['Research design', SlideResearch], ['Methodology', SlideMethod],
+  ['Architecture', SlideArchitecture], ['Question flow', SlideFlow], ['DevOps', SlideDevOps], ['CI/CD', SlideCI],
+  ['Results', SlideResults], ['Interpretation', SlideInterpretation], ['Failure analysis', SlideFailures],
   ['Live system', SlideHealth], ['Limits', SlideLimits], ['Questions', SlideEnd],
 ]
 
