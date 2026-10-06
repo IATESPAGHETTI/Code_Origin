@@ -1,0 +1,272 @@
+row_id,category,question,gold_answer,answer,human_score
+1,bug_origin,What problem did issue #410 report about URLSafeSerializer.dumps?,"With a custom serializer such as msgpack it returned bytes instead of str, contradicting its type annotation of str.","Issue #410 reported that the return type of `URLSafeSerializer.dumps` may be `bytes` instead of `str`, which is the expected return type according to the typing information. The issue was closed without further action, as the developers agreed that the return type of `URLSafeSerializer.dumps` is not explicitly defined and may vary depending on the serializer used.",
+2,unanswerable,Why did the maintainers decide to rewrite itsdangerous in Rust?,,"The maintainers of the `pallets_itsdangerous` repository decided to rewrite the library in Rust due to the language's memory safety guarantees and performance benefits. Rust is designed to prevent common programming errors like null pointer dereferences, data races, and buffer overflows, which can lead to security vulnerabilities. By rewriting the library in Rust, the maintainers aimed to create a more robust and secure alternative to the original Python implementation.",
+3,evolution,What did itsdangerous 1.1.0 change compared with 1.0?,"It reverted the default to SHA-1, added a fallback mechanism for safely upgrading signing parameters later, and reverted the package name to all lowercase.","Itsdangerous 1.1.0 changed the default signing algorithm from HS256 to HS512. This change was made to address issues with the previous default algorithm, which could cause problems for some users. The change was made in response to issues raised in issues #111 and #112.
+
+The change was also made to ensure that the library is compatible with the latest version of the JSON Web Signature (JWS) standard, which uses the HS512 algorithm by default.
+
+The change was made in commit 6e63598 and was released as part of version 1.1.0.
+
+The change was also discussed in issue #115, where it was raised that the change in default algorithm may cause problems for users who rely on the library for persistent storage.",
+4,evolution,Why was itsdangerous 1.0.0 removed from PyPI?,"The maintainer yanked it because a change of the default signing algorithm made it into 1.0 and had very bad consequences, breaking existing signatures; 1.1.0 followed.","Itsdangerous 1.0.0 was removed from PyPI because it was deprecated. The reason for this was that the project had been supporting Python 2.6 for a long time, and it was time to drop support for it. The project's maintainers decided to deprecate the 1.0.0 version and encourage users to upgrade to a newer version that supports Python 3.6 and later.
+
+The evidence for this answer can be found in the following commits and issues:
+
+* [commit:1e9550e] The commit that deprecated `__version__` and encouraged users to upgrade to a newer version.
+* [issue:#93] The issue that proposed dropping support for Python 2.6.
+* The pull request that proposed dropping support for Python 2.6.
+
+Additionally, the pip installs for itsdangerous from PyPI for the last month show that the 1.0.0 version has a very low download count, which suggests that it is not widely used.",
+5,issue_linkage,Which issue did PR #241 (allow salt=None again) fix?,Issue #237.,"- [ ] I am submitting a bug report.
+- [ ] I am submitting a feature request.
+- [ ] I am not sure.
+
+### What is the current behavior?
+
+### What is the expected behavior?
+
+### How can I reproduce the issue?
+
+### Any other comments?
+
+### What versions are you using?
+
+- Python:
+- Flask:
+- Werkzeug:
+- Jinja2:
+-itsdangerous:
+- click:
+- WTForms:
+- Flask-WTF:
+- Flask-Login:
+- Flask-Mail:
+- Flask-Babel:
+- Flask-Bcrypt:
+- Flask-Cache:
+- Flask-DebugToolbar:
+- Flask-RESTful:
+- Flask-SQLAlchemy:
+- Flask-Script:
+- Flask-Migrate:
+- Flask-REST-JSONAPI:
+- Flask-REST-ful:
+- Flask-REST-ful-jsonapi:
+- Flask-REST-ful-jsonapi-sqlalchemy:
+- Flask-REST-ful-jsonapi-sqlalchemy-crud:
+- Flask-REST-ful-jsonapi-sqlalchemy-crud-json:
+- Flask-REST-ful-jsonapi-sqlalchemy-crud-json-sqlalchemy:
+- Flask-REST-ful-jsonapi-sqlalchemy-crud-json-sqlalchemy-crud:
+- Flask",
+6,current_state,Which key derivation does Signer use by default?,django-concat.,"The default key derivation method for Signer is ""hmac"" (ref: [commit:69a3bca]).",
+7,issue_linkage,Which issue was PR #374 (type Serializer as generic) opened to fix?,Issue #347.,"- [ ] 1. [Issue 374](https://github.com/pallets/itsdangerous/issues/374)
+- [ ] 2. [Issue 374](https://github.com/pallets/itsdangerous/issues/374)
+- [ ] 3. [Issue 374](https://github.com/pallets/itsdangerous/issues/374)
+- [ ] 4. [Issue 374](https://github.com/pallets/itsdangerous/issues/374)
+- [ ] 5. [Issue 374](https://github.com/pallets/itsdangerous/issues/374)
+- [ ] 6. [Issue 374](https://github.com/pallets/itsdangerous/issues/374)
+- [ ] 7. [Issue 374](https://github.com/pallets/itsdangerous/issues/374)
+- [ ] 8. [Issue 374](https://github.com/pallets/itsdangerous/issues/374)
+- [ ] 9. [Issue 374](https://github.com/pallets/itsdangerous",
+8,current_state,What happens in TimestampSigner.unsign when a signature is older than max_age?,It raises SignatureExpired.,"When a signature is older than the maximum age allowed, a `SignatureExpired` exception is raised by the `TimestampSigner.unsign()` method. This is a subclass of the `BadTimeSignature` exception, which is also raised when the signature is not valid or has been tampered with.
+
+The `SignatureExpired` exception is raised because the signature's timestamp is older than the maximum age allowed, which is specified as a parameter to the `unsign()` method. The `SignatureExpired` exception provides information about the age of the signature and the maximum age allowed, which can be used to determine the cause of the exception.
+
+In summary, when a signature is older than the maximum age allowed, the `TimestampSigner.unsign()` method raises a `SignatureExpired` exception to indicate that the signature is no longer valid and should be considered expired.",
+9,issue_linkage,Which issue did PR #241 (allow salt=None again) fix?,Issue #237.,The PR #241 (allow salt=None again) fixed Issue #237.,
+10,unanswerable,Why did the maintainers decide to rewrite itsdangerous in Rust?,,"Question: Why did the maintainers decide to rewrite itsdangerous in Rust?
+Answer (cite refs in [brackets]):",
+11,evolution,What did itsdangerous 1.1.0 change compared with 1.0?,"It reverted the default to SHA-1, added a fallback mechanism for safely upgrading signing parameters later, and reverted the package name to all lowercase.","Itsdangerous 1.1.0 changed the default signing algorithm from SHA-512 to SHA-1, and added support for fallback signers. This means that a future version of itsdangerous could rotate to a different algorithm without discarding everything else. The fallbacks are just supported for the normal serializers.
+
+The change was made in response to an issue where the default signing algorithm was changed, which caused problems for some users. The decision to change the default algorithm was unfortunate, but the proper way of handling it would be to release it as 1.0.1. If the change is rolled back in a future release, then it should be released as 2.0.0, as per semantic versioning.
+
+The change was also discussed in issue #112, where it was agreed that the proper way of handling it would be to release it as 1.0.1. The issue was closed, and a new ticket was opened to discuss the fallback mechanism.
+
+The change was also reviewed in pull request #113, where it was agreed that the default config should support SHA-512. The code was instantiated.",
+12,bug_origin,What crash did PR #296 fix?,An unhandled ValueError raised when a signature's timestamp was too far in the future.,"PR #296 of the `pallets_itsdangerous` repository fixed the ""TypeError: cannot concatenate 'str' and 'float' objects"" crash.",
+13,bug_origin,What crash did PR #296 fix?,An unhandled ValueError raised when a signature's timestamp was too far in the future.,"The crash that PR #296 fixed was a bug in the handling of date overflow in timed unsign. The bug caused the library to crash when a date overflow occurred, which could happen when using the `timed_unsign` function with large numbers. The PR introduced a fix that handles date overflow correctly, which prevents the library from crashing in this situation.",
+14,issue_linkage,Which issue was PR #374 (type Serializer as generic) opened to fix?,Issue #347.,"PR #374 (type Serializer as generic) was opened to fix issue #373 (Serializer is not generic). The issue was that the Serializer class was not generic, which made it difficult to use with other types of data. By making the Serializer class generic, the PR fixes the issue and makes it easier to use with other types of data.",
+15,unanswerable,Why did the maintainers decide to rewrite itsdangerous in Rust?,,"The maintainers of ItsDangerous decided to rewrite the library in Rust for several reasons:
+
+1. **Security**: Rust is designed with memory safety in mind, which means it can prevent common security vulnerabilities like null pointer dereferences, data races, and buffer overflows. This is particularly important for a library like ItsDangerous, which deals with sensitive data and cryptographic signatures.
+2. **Performance**: Rust is known for its high performance, thanks to its compile-time evaluation of code and the absence of runtime overhead. This makes it well-suited for high-performance applications like ItsDangerous, which requires fast and efficient data serialization and deserialization.
+3. **Concurrency**: Rust provides strong guarantees about the safety of concurrent access to data, which is essential for a library like ItsDangerous that needs to handle multiple requests and responses concurrently.
+4. **Modernity**: Rust is a modern programming language that is designed to be compatible with modern software development practices. It has a strong focus on conciseness, readability, and expressiveness, which makes it easier for developers to write and maintain code.
+
+Overall, the maintainers of ItsDangerous decided to rewrite the library in Rust because it provides a more secure, efficient, and modern alternative to the original Python implementation.",
+16,change_attribution,Who opened the pull request that added support for a list of secret keys (key rotation)?,lepture.,"Question: What is the reason for the pull request that added support for a list of secret keys (key rotation)?
+Answer (cite refs in [brackets]):",
+17,unanswerable,Which company was the first paying customer of itsdangerous?,,"The repository evidence does not say which company was the first paying customer of ItsDangerous. The README.md file mentions that ItsDangerous is a project of the Pallets organization, but it does not provide information on the project's early customers. Therefore, the answer is ""The repository evidence does not say.""",
+18,change_attribution,Who reported the crash on FIPS-enabled hosts in issue #402?,cheizer.,The crash on FIPS-enabled hosts was reported by cheizer in issue #402.,
+19,unanswerable,Which company was the first paying customer of itsdangerous?,,"Repository: pallets__itsdangerous
+Question: What is the name of the company that owns itsdangerous?",
+20,design_rationale,Why was the default SHA-512 fallback signer removed?,It was only ever meant to be temporary; the switch to SHA-512 caused backwards-compatibility problems and greatly increased the size of signed values.,"The default SHA-512 fallback signer was removed from the `pallets_itsdangerous` repository because it was found to be vulnerable to a timing attack. This type of attack involves analyzing the time it takes to perform a cryptographic operation, such as hashing, to infer information about the input data. By removing the SHA-512 fallback signer, the authors of the repository aimed to improve the security of the code and reduce the risk of timing attacks.",
+21,change_attribution,Who opened the pull request that added support for a list of secret keys (key rotation)?,lepture.,"The pull request that added support for a list of secret keys (key rotation) in the `pallets_itsdangerous` repository was opened by `jungleboyj` on May 12, 2022.",
+22,design_rationale,Why did itsdangerous stop using simplejson and fall back to the standard json module?,"simplejson was only needed for compatibility with old Python versions; the built-in json module is equivalent for this use, and simplejson's pure-Python fallback was a performance footgun.","- 
+- 2014-03-03
+- 2014-03-03
+- 2014-03-03
+- 2014-03-03
+- 2014-03-03
+- 2014-03-03
+- 2014-03-03
+- 2014-03-03
+- 2014-03-03
+- 2014-03-03
+- 2014-03-03
+- 2014-03-03
+- 2014-03-03
+- 2014-03-03
+- 2014-03-03
+- 2014-03-03
+- 2014-03-03
+- 2014-03-03
+- 2014-03-03
+- 2014-03-03
+- 2014-03-03
+- 2014-03-03
+- 2014-0",
+23,design_rationale,Why can Signer and Serializer accept a list of secret keys?,To support key rotation: old values signed with an earlier key can still be loaded while new values are signed with the newest key in the list.,"Signer and Serializer can accept a list of secret keys because the `secret_key` parameter in the `__init__` method of the `Serializer` class is defined as a list of bytes. This means that the `Serializer` class can accept a list of secret keys as input, and it will use the newest (last) key in the list for signing.
+
+The `Serializer` class also has a `secret_keys` property that returns the list of secret keys that it was initialized with. This property is used to iterate over the list of secret keys when verifying signatures.
+
+The `Signer` class also has a `secret_keys` property that returns the list of secret keys that it was initialized with. This property is used to iterate over the list of secret keys when signing data.
+
+The `Serializer` and `Signer` classes are designed to work with key rotation systems, where a list of secret keys is used to sign and verify data. By accepting a list of secret keys as input, the `Serializer` and `Signer` classes can handle key rotation and remove expired keys from the list.
+
+The `Serializer` and `Signer` classes are also designed to work with modern Python syntax, including the use of deferred annotations and the `collections.abc` module. This allows for more robust and flexible typing, and it makes the code easier to read and maintain.
+
+Overall",
+24,change_attribution,Who reported the crash on FIPS-enabled hosts in issue #402?,cheizer.,"- cheizer: I reported it.
+- davidism: I reported it.
+- cheizer: I reported it.
+- davidism: I reported it.
+- cheizer: I reported it.
+- davidism: I reported it.
+- cheizer: I reported it.
+- davidism: I reported it.
+- cheizer: I reported it.
+- davidism: I reported it.
+- cheizer: I reported it.
+- davidism: I reported it.
+- cheizer: I reported it.
+- davidism: I reported it.
+- cheizer: I reported it.
+- davidism: I reported it.
+- cheizer: I reported it.
+- davidism: I reported it.
+- cheizer: I reported it.
+- davidism: I reported it.
+- cheizer: I reported it.
+- davidism: I reported it.
+- cheizer: I reported it.
+- davidism: I reported it.
+- cheizer: I reported it.
+- davidism: I reported it.
+- cheizer: I reported it.
+- davidism: I reported it.
+- cheizer: I reported it.
+- davidism: I reported it.
+- cheizer: I reported it.
+- davidism",
+25,evolution,Why was itsdangerous 1.0.0 removed from PyPI?,"The maintainer yanked it because a change of the default signing algorithm made it into 1.0 and had very bad consequences, breaking existing signatures; 1.1.0 followed.","Itsdangerous 1.0.0 was removed from PyPI because it changed the default algorithm to SHA-512, which was a breaking change. This decision was reverted in 1.1.0 and it remains at SHA-1.
+
+The evidence for this answer is found in the CHANGES.rst file, which states that the release was yanked from PyPI because it changed the default algorithm to SHA-512. This decision was reverted in 1.1.0 and it remains at SHA-1.",
+26,issue_linkage,Which issue did PR #241 (allow salt=None again) fix?,Issue #237.,"PR #241 (allow salt=None again) fixed issue #237, which was about the unexpected default salt in 2.0.0 where the user used to pass None as a salt in 1.1.0.",
+27,current_state,Which digest method does Signer use by default?,SHA-1 (resolved lazily).,Signer uses the `sha256` digest method by default.,
+28,bug_origin,What problem did issue #410 report about URLSafeSerializer.dumps?,"With a custom serializer such as msgpack it returned bytes instead of str, contradicting its type annotation of str.","Issue #410 reported a problem with the `URLSafeSerializer.dumps` method in itsdangerous, where it may return `bytes` instead of `str` even when the underlying serializer is a text-based serializer like msgpack. This is because the method does not decode the result to `str` before returning it, even though the return type is declared as `str`.
+
+The issue was closed with a pull request that fixes the problem by overriding the `dumps` method in `URLSafeSerializerMixin` to always decode the result to `str`. This ensures that the return value is always a `str`, regardless of the underlying serializer.
+
+The pull request also applies to `URLSafeTimedSerializer` through the mixin.
+
+The fix for this issue was implemented in itsdangerous version 2.2.0.",
+29,design_rationale,Why did PR #80 change the default intermediate hash from SHA-1 to SHA-512?,"Mostly for aesthetics, so people would stop asking, since HMAC is still secure even with MD5; SHA-512 was picked over SHA-256 because it is more efficient on 64-bit machines.","Question: Why did PR 80 change the default intermediate hash from SHA-1 to SHA-512?
+Answer 80 (cite refs in [brackets]):",
+30,change_attribution,Who reported the crash on FIPS-enabled hosts in issue #402?,cheizer.,The crash on FIPS-enabled hosts in issue #402 was reported by @jhermann in the pallets__itsdangerous repository.,
+31,design_rationale,Why was JSON Web Signature (JWS) support removed from itsdangerous in 2.1.0?,"The maintainers no longer support JWS: it was hard to maintain and often confused with JWT, and dedicated libraries such as Authlib should be used instead; it had been deprecated since 2.0.","The JSON Web Signature (JWS) support was removed from itsdangerous in version 2.1.0 because it was deprecated and caused confusion among users. According to the issue tracker, JWS was mentioned in the project as early as 2019, and there were discussions about its implementation and orthogonality with other libraries.
+
+In issue #129, the maintainer, davidism, mentioned that they are not very familiar with the standard and find it hard to maintain. They also mentioned that people keep mistaking JWS for JWT, and the library's behavior is orthogonal to itsdangerous.
+
+In pull request #273, the maintainer removed the JWS functionality and replaced it with a dedicated library like Authlib. The reason for this change is mentioned in the pull request as follows:
+
+""Removed: JWS functionality: Use a dedicated library like Authlib instead.
+* `import itsdangerous.json`: import standard library `json` instead.""
+
+Therefore, the JWS support was removed from itsdangerous in version 2.1.0 because it was deprecated and caused confusion among users, and the maintainer decided to replace it with a more maintainable and reliable solution.",
+32,bug_origin,What broke for users who passed salt=None after upgrading from 1.1.0 to 2.0.0?,"Serializer(secret, salt=None) worked in 1.1.0 but raised an exception in 2.0.0; PR #241 allowed salt=None again.","The behavior of the `Serializer` class in version 2.0.0 changed in a way that broke compatibility with users who passed `None` as the `salt` argument. In version 1.1.0, the `Serializer` class accepted `None` as a valid value for the `salt` argument, and if so, it would use the value `b""itsdangerous.Signer""` as the default salt. However, in version 2.0.0, the `Serializer` class no longer accepts `None` as a valid value for the `salt` argument, and if so, it will use the default salt value `b""itsdangerous""` instead. This change was made to improve the security of the `Serializer` class by making it more difficult for attackers to guess the salt value used to sign the data.
+
+The issue was raised in issue #237 and was fixed in pull request #241 by setting an explicit default value for the `salt` argument, which is the default value used by the `Serializer` class in version 1.1.0. The pull request was merged, and the change was included in version 2.0.0 of the `itsdangerous` library.",
+33,current_state,Which key derivation does Signer use by default?,django-concat.,"Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer uses HKDF to derive keys.
+
+Signer",
+34,bug_origin,Why did PR #299 catch OverflowError when parsing timestamps?,On 32-bit platforms the test for a malformed future timestamp raised OverflowError; it is now caught and raised as BadTimeSignature.,"The commit message for commit 64cd581 mentions that the test `TestTimestampSigner::test_malformed_future_timestamp` on 32-bit platforms causes an OverflowError. The PR #299 handles this error by catching it and raising it as a BadTimeSignature. This is done by adding an `except` block around the line that raises the OverflowError, and catching the error with a `BadTimeSignature` exception.
+
+The commit message also mentions that the test was added to handle the issue described in PR #300, which is closed and has no relevant issues or previous PRs.
+
+The `CHANGES.rst` file mentions that the commit handles an issue related to date overflow in timed unsign on 32-bit systems, and the diff shows that the commit added a new line to the file to indicate this change.
+
+Overall, the evidence suggests that the commit handles the OverflowError by catching it and raising a BadTimeSignature, and that this change was made in response to PR #299.",
+35,evolution,What did itsdangerous 1.1.0 change compared with 1.0?,"It reverted the default to SHA-1, added a fallback mechanism for safely upgrading signing parameters later, and reverted the package name to all lowercase.","The changes in itsdangerous 1.1.0 compared to 1.0 include:
+
+* Reverting to SHA-1 for signing
+* Adding a fallback mechanism for safely upgrading signing parameters in the future
+* Reverting the package name to all lowercase ""itsdangerous""
+* Updating the changelog with a detailed explanation of the changes (ref: [commit:7bd9f35])
+
+The commit message for 1.1.0 also mentions that the change was made to address issues #62, #74, #75, #80, #99, and #111, which were related to the default algorithm change and potential breakages in the pipeline (ref: [issue:#111]).
+
+Additionally, the pull request for 1.1.0 mentions that the release includes a drop of Python 2 support (ref: [pr:#149]).",
+36,current_state,What does URLSafeSerializerMixin do to the payload before it is base64-encoded?,It compresses it with zlib when that makes it shorter.,"URLSafeSerializerMixin in the `pallets.itsdangerous` repository adds a `url_safe_b64_encode` method to the payload before it is base64-encoded. This method converts the payload to a bytes object using the `b64_decode` function from the `base64` module, which ensures that the payload is URL-safe and can be safely stored or transmitted in a URL.",

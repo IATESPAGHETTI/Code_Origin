@@ -226,7 +226,7 @@ function SlideResults() {
               )
             })}
           </div>
-          <p className="mt-6 text-lg muted">Honest reading: a small development split, scored automatically. History raises both 7B models; only llama2 clears the pre-registered rule (codellama has the same effect but a wider interval), and the 3B model barely benefits. It shows the pipeline works. It is not yet a research conclusion.</p>
+          <p className="mt-6 text-lg muted">Honest reading: automatic scoring, small samples. On the real held-out repository both 7B models clear the pre-registered rule and the 3B model does not. Human grading is still to come.</p>
         </>
       )}
     </div>
@@ -268,7 +268,7 @@ function SlideHealth() {
 
 function SlideMethod() {
   const cols = [
-    ['Data', ['43 questions: 23 dev, 20 held-out test', 'Categories: design rationale, bug history, evolution, current state (control), off-topic / unanswerable', 'Gold evidence + key facts per question; dataset hash b96ac1b512bac60f', 'Thresholds tuned on dev only; test untouched']],
+    ['Data', ['Demo repo: 43 questions (23 dev, 20 test), used to build and tune', 'Held-out real repo: pallets/itsdangerous, 35 questions, 677 commits, 125 issues, 311 PRs', 'Gold evidence + key facts per question; dataset hash b68e5bd36697c3ba committed before the run', 'Categories: design rationale, bug history, evolution, linkage, attribution; current state (control); refusal']],
     ['Metrics', ['Correctness: share of key facts present (refusal scored for unanswerable)', 'Evidence recall / precision of retrieval', 'Citation rate and validity', 'Unsupported-sentence ratio (G4)', 'Failure taxonomy per wrong answer']],
     ['Statistics', ['Bootstrap 95% confidence intervals', 'Paired sign-flip permutation test', "Cohen's d_z effect size", 'Quadratic-weighted kappa + Spearman for judge vs human', 'Reported per category, never one blended score']],
     ['Reproducibility', ['Temperature 0, seed 42, 300-token cap, 6000-char budget, top-k 8', 'Same prompt shape in every mode', 'Models, settings and dataset hash stored with every run', 'One command to start the stack; scripts/run_eval.py to evaluate']],
@@ -292,33 +292,36 @@ function SlideMethod() {
 }
 
 function SlideInterpretation() {
-  const head = ['Model', 'No context', 'Code only', 'Code + history', 'History effect [95% CI]', 'Verdict', 'Oracle']
+  const head = ['Model', 'Repository', 'No context', 'Code only', 'Code + history', 'History effect [95% CI]', 'Verdict']
   const rows = [
-    ['llama2', '26%', '67%', '91%', '+0.42 [+0.15, +0.69], p 0.023', 'Useful', '100%'],
-    ['codellama:7b', '30%', '67%', '91%', '+0.42 [0.00, +0.73]', 'Inconclusive', '88%'],
-    ['starcoder2:3b', '17%', '41%', '46%', '+0.08 [0.00, +0.19]', 'Inconclusive', '19%'],
+    ['llama2', 'Real (held-out)', '', '', '', '+0.32 [+0.07, +0.55]  p 0.022', 'Useful'],
+    ['codellama:7b', 'Real (held-out)', '', '', '', '+0.28 [+0.05, +0.49]  p 0.033', 'Useful'],
+    ['starcoder2:3b', 'Real (held-out)', '', '', '', '-0.02 [-0.21, +0.17]', 'No effect'],
+    ['llama2', 'Demo (dev)', '26%', '67%', '91%', '+0.42 [+0.15, +0.69]  p 0.023', 'Useful'],
+    ['codellama:7b', 'Demo (dev)', '30%', '67%', '91%', '+0.42 [0.00, +0.73]', 'Inconclusive'],
+    ['starcoder2:3b', 'Demo (dev)', '17%', '41%', '46%', '+0.08 [0.00, +0.19]', 'Inconclusive'],
   ]
   return (
     <div>
-      <Title eyebrow="Results and interpretation" sub="Run #5: dev split, 255 answers, real local models. History effect = code_history minus code_only on the 13 history questions.">
+      <Title eyebrow="Results and interpretation" sub="History effect = code_history minus code_only on history questions: 24 questions on the real repository, 13 on the demo.">
         What the numbers mean
       </Title>
       <div className="panel overflow-x-auto !p-0">
         <table className="w-full text-left text-lg">
           <thead><tr className="muted text-base">{head.map((h) => <th key={h} className="px-4 py-3 font-medium">{h}</th>)}</tr></thead>
           <tbody>
-            {rows.map((r) => (
-              <tr key={r[0]} className="border-t" style={{ borderColor: 'var(--line)' }}>
-                {r.map((c, k) => <td key={k} className={`px-4 py-3 ${k === 0 || k === 5 ? 'font-semibold' : ''}`}>{c}</td>)}
+            {rows.map((r, i) => (
+              <tr key={i} className="border-t" style={{ borderColor: 'var(--line)', background: i < 3 ? 'rgba(16,185,129,.07)' : undefined }}>
+                {r.map((c, k) => <td key={k} className={`px-4 py-2.5 ${k === 0 || k === 6 ? 'font-semibold' : ''}`}>{c || (k > 1 && k < 5 ? '-' : '')}</td>)}
               </tr>
             ))}
           </tbody>
         </table>
       </div>
       <div className="mt-5 grid gap-4 text-lg md:grid-cols-3">
-        <div className="panel"><b>History helps capable models.</b><p className="mt-1 text-base muted">Evidence recall rises from 0.19 (code only) to 1.00 (with history), and correctness follows.</p></div>
-        <div className="panel"><b>Same effect is not the same verdict.</b><p className="mt-1 text-base muted">codellama has the same +0.42, but its interval touches 0. That means not enough evidence, not no effect.</p></div>
-        <div className="panel"><b>The oracle separates causes.</b><p className="mt-1 text-base muted">With perfect evidence starcoder2 still scores 19%: its weakness is using evidence, not finding it.</p></div>
+        <div className="panel"><b>It holds on a real repository.</b><p className="mt-1 text-base muted">Both 7B models pass the pre-registered rule on history written by strangers; the control loses nothing. The effect is smaller than on the demo (+0.3 vs +0.4), as expected.</p></div>
+        <div className="panel"><b>Mechanism: retrieval.</b><p className="mt-1 text-base muted">Evidence recall rises from 0.14 (code only) to 0.70 (with history). Excluding two items an independent review flagged leaves the conclusions unchanged.</p></div>
+        <div className="panel"><b>Model size matters.</b><p className="mt-1 text-base muted">starcoder2:3b gets no benefit on either repository: even with the gold evidence it mostly invents (18 of 28 oracle answers wrong and hallucinated).</p></div>
       </div>
     </div>
   )
@@ -326,11 +329,11 @@ function SlideInterpretation() {
 
 function SlideFailures() {
   const items = [
-    ['Model ignores evidence', 'starcoder2:3b is a code-completion model: 11 of 16 oracle answers copied or invented instead of answering.', 'Choose an instruction-tuned model.'],
-    ['Invented or missing citations', 'llama2 cited in 3 of 23 history answers, codellama 5 of 23. G3 strips invented refs; the low rate is real (only 4 of 186 answers changed after fixing citation parsing).', 'Stricter prompt format; measure with humans.'],
-    ['Vague questions retrieve badly', '"Tell me about all 3 commits" can return code and docs instead of commit chunks, and the model fills the gap.', 'Commit-aware retrieval (not done).'],
-    ['Judge too lenient', 'The gemma:2b jury gave 100% to every model, even the weakest, so it is not trusted.', 'Human grading and kappa first.'],
-    ['Heuristic grounding check', 'G4 red highlights flag weakly supported sentences; the threshold is not yet validated against humans.', 'Calibrate on human labels.'],
+    ['Retrieval misses unusual phrasing', '"Why was 1.0.0 removed from PyPI?" fetched unrelated issues (#92, #47); recall 0.70 not 1.00 on the real repo. Both 7B models then invented a reason, and code_only happened to score better, so the evolution category (n=2) regresses with history.', 'Query rewriting / commit-aware retrieval (not done).'],
+    ['Refusal gate does not transfer', 'Unanswerable but on-topic questions ("who was the first paying customer?") passed the relevance gate; codellama invented "Tristan Escalada, 2014". Only llama2 abstained, by itself.', 'Recalibrate G2 on negatives from several repositories.'],
+    ['Model ignores or distorts evidence', 'Evidence retrieved (#111, #112) but codellama said 1.1.0 changed the default to HS512 (that was 1.0). starcoder2:3b: 18 of 28 oracle answers hallucinated.', 'Instruction-tuned models; human grading.'],
+    ['Models rarely cite the right source', 'Gold evidence cited in only 1-2% of answers; citation validity is high (0.9-1.0) because invented refs are stripped (G3).', 'Stricter answer format; measure with humans.'],
+    ['Scoring and judge are unvalidated', 'Key-fact matching is automatic (a hedged "not mentioned, but..." answer scored 0); the gemma:2b jury gave every model 100%. Human sheet (36 rows) is ready, ungraded.', 'Human grading and kappa.'],
   ]
   return (
     <div>
@@ -362,23 +365,23 @@ function SlideLimits() {
       <div className="grid gap-4 md:grid-cols-2 text-lg">
         <div className="panel"><b>Limits</b>
           <ul className="mt-2 list-disc space-y-1 pl-5 muted">
-            <li><b>Circularity:</b> the demo repository, its history and the questions were written together, so history questions favour history by design.</li>
-            <li>Small sample: 13 history questions, 3 control; wide intervals.</li>
-            <li>Automatic key-fact scoring; no human grades yet. The LLM jury is too lenient.</li>
+            <li><b>Circularity:</b> on the demo repository we wrote history and questions together. On the real repository we drafted the questions from its threads (script-checked; an independent review found 2 weak items of 35, not edited).</li>
+            <li>Small sample: 24 history, 4 control questions on the real repo; wide intervals; one repository.</li>
+            <li>Automatic key-fact scoring; human grades not yet collected. The LLM jury is too lenient.</li>
             <li>One repository, small local models on a 6 GB GPU.</li>
             <li>Guardrail thresholds rest on very few negative examples.</li>
           </ul>
         </div>
         <div className="panel"><b>Next steps</b>
           <ul className="mt-2 list-disc space-y-1 pl-5 muted">
-            <li>Real repository with independent history (pallets/itsdangerous is indexed) and 30-40 human-verified questions.</li>
-            <li>Human-grade about 60 answers; report judge-human kappa.</li>
-            <li>One held-out run with settings frozen.</li>
-            <li>Commit-aware retrieval for vague questions; larger model comparison.</li>
+            <li>Human-grade the 36-row blind sheet; report kappa for the automatic score.</li>
+            <li>A second person verifies the gold answers; add a second real repository.</li>
+            <li>Fix retrieval on unusual phrasings and the refusal gate for on-topic unanswerable questions.</li>
+            <li>Larger-model comparison to test whether the effect depends on size.</li>
           </ul>
         </div>
       </div>
-      <p className="mt-5 text-base muted">We claim the result is promising, not proven.</p>
+      <p className="mt-5 text-base muted">We claim: supported on one real repository for 7B models, not yet general.</p>
     </div>
   )
 }

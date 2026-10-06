@@ -138,3 +138,12 @@ Environment notes: Windows + Git Bash (set `MSYS_NO_PATHCONV=1` for container pa
 - **Measured effect on earlier results:** `python scripts/rescore_citations.py reports/dev_full_3models.json` re-applies the fixed parsing to the stored answers. It changes the citation count of only 4 of 186 answers (2 llama2, 2 starcoder2:3b); llama2 `code_history` stays at 3 of 23 answers citing. So the low citation rates in the dev run are real, and correctness (key-fact matching) is unaffected.
 - G4 (lexical grounding) flags padded paraphrase: a sentence that restates a supported bullet with extra words can fall below `GROUNDING_MIN_SUPPORT` (0.50). That is the known limitation of a lexical check that has not been validated against human labels; the threshold was deliberately not tuned to hide it.
 - Demo guidance: for questions about the Nexus repo `codellama:7b` stays closer to the evidence than `llama2`.
+
+## 20. Held-out real-repository run (run #8) - added after section 19
+
+- Repo: `pallets/itsdangerous` re-indexed from a `gh` snapshot (`scripts/fetch_gh_fixture.py`, `demo-data/itsdangerous_fixtures.json`, git-ignored): 677 commits, 125 issues, 311 PRs, 7 releases.
+- Dataset `services/eval/datasets/itsdangerous.json` (hash `b68e5bd36697c3ba`, 35 items, all `split=test`), committed as `50bdc9e` before the run. Checked by `scripts/check_dataset.py` (28/28). Independent review found it06 and it35 weak; not edited, see `itsdangerous.errata.md`; `scripts/sensitivity.py` shows the conclusions are unchanged without them.
+- Run #7 was lost when Docker Desktop stopped (about 70/399 answers); discarded unseen. Run #8 = same settings, 399 answers, 0 errors.
+- Result: history effect llama2 +0.32 [+0.07, +0.55] p 0.022, codellama +0.28 [+0.05, +0.49] p 0.033 (both pass the rule), starcoder2 -0.02 (inconclusive). Control loss 0 (n=4). Evidence recall 0.14 -> 0.70.
+- Weaknesses found: retrieval misses on unusual phrasing (it17, it13); G2 refusal gate does not fire for on-topic unanswerable questions (codellama and starcoder2 invent answers).
+- Still open: human grading of `reports/grading_itsdangerous.csv` (36 blind rows; the key file is kept local until graded), second-person check of gold answers, second real repository.

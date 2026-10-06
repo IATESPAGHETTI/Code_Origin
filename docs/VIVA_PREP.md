@@ -3,9 +3,12 @@
 Read `docs/EVALUATION.md` first; this sheet is the short version plus likely questions. If you cannot answer a question below in your own words, that is the part to study.
 
 ## The 60-second pitch
-Code shows *what* exists; the reason it exists is in the history around it (commits, issues, PRs, reviews). CodeOrigin is a RAG system that indexes both, answers "why was it built this way?" with citations, and refuses when the evidence does not say. We test the research question *does adding repository history improve answers?* by asking the same questions in four modes (no context, code only, code + history, oracle) with everything else held constant, and judging the result with a rule we fixed beforehand. On a small seeded repository, history raised correctness on history questions from about 0.5 to about 0.9 for two 7B models, and only one of them passes our strict rule; the evidence is promising but not yet a conclusion because the sample is tiny and the repository is fictional.
+Code shows *what* exists; the reason it exists is in the history around it (commits, issues, PRs, reviews). CodeOrigin is a RAG system that indexes both, answers "why was it built this way?" with citations, and refuses when the evidence does not say. We test the research question *does adding repository history improve answers?* by asking the same questions in four modes (no context, code only, code + history, oracle) with everything else held constant, and judging the result with a rule we fixed beforehand. On a seeded demo repository history raised correctness from about 0.5 to about 0.9 for two 7B models. We then ran a held-out test on a real repository, pallets/itsdangerous (677 commits, 125 issues, 311 PRs, history written by strangers): both 7B models pass the rule (+0.32 and +0.28 correctness, intervals excluding 0, no loss on the control) and the 3B model shows no effect. It is the first real evidence for the research question, still limited by 24 history questions and automatic scoring.
 
-## Numbers worth remembering (run #5, dev split)
+## Numbers worth remembering
+**Held-out real repository (run #8, pallets/itsdangerous, 35 questions, 399 answers):** history effect (`code_history` minus `code_only`, 24 history questions): llama2 +0.32 [+0.07, +0.55] p 0.022; codellama:7b +0.28 [+0.05, +0.49] p 0.033; starcoder2:3b -0.02 [-0.21, +0.17]. Both 7B models pass the rule. Evidence recall 0.14 (`code_only`) vs 0.70 (`code_history`). Excluding the two items an independent review flagged (it06, it35): +0.33 and +0.27, same conclusions. Dataset hash `b68e5bd36697c3ba`, committed before the run.
+
+**Demo repository (run #5, dev split):**
 - 43 questions in the dataset (23 dev, 20 test); 13 history questions in the dev comparison; control category 3.
 - Overall correctness `no_context` / `code_only` / `code_history`: llama2 26% / 67% / 91%; codellama:7b 30% / 67% / 91%; starcoder2:3b 17% / 41% / 46%.
 - History effect (`code_history` minus `code_only`): llama2 +0.42 [+0.15, +0.69] (passes the rule); codellama +0.42 [0.00, +0.73] (inconclusive); starcoder2 +0.08 [0.00, +0.19] (inconclusive).
@@ -30,9 +33,9 @@ Code shows *what* exists; the reason it exists is in the history around it (comm
 
 **Why not use the LLM jury?** We built one (`gemma:2b`, not a compared model, to avoid self-preference) but it gave 100% to every model, even the weakest, so it is too lenient. A judge is only trustworthy once it agrees with humans (kappa >= 0.6); we have not measured that.
 
-**What are the biggest threats to validity?** Circularity (we wrote the repository, its history and the questions together), tiny sample, automatic scoring, one repository, small local models, and dev/test discipline (thresholds tuned on dev only; an exploratory fourth-model run touched the test items and is excluded).
+**What are the biggest threats to validity?** Circularity (on the demo repository we wrote everything together; on the real repository we drafted the questions from its threads), tiny sample, automatic scoring, one repository, small local models, and dev/test discipline (thresholds tuned on dev only; an exploratory fourth-model run touched the test items and is excluded).
 
-**What would you do with more time?** Real repository with independently written issues and PRs and 40+ human-verified questions, human grading of about 60 answers with kappa, one held-out run, and a larger model to see if the effect depends on size.
+**What would you do with more time?** Human grading of the blind sheet to measure kappa for the automatic score, a second person verifying the gold answers, a second real repository with 40+ questions, a fix for the two weaknesses found (retrieval of unusual phrasings, refusal of on-topic unanswerable questions), and a larger model to see whether the effect depends on size.
 
 ## Implementation
 **How does retrieval work?** Hybrid: vector similarity (all-MiniLM-L6-v2 embeddings in ChromaDB) plus BM25 keyword search (so exact SHAs, issue numbers and identifiers still match), fused with reciprocal-rank fusion. Commits, diffs, issues, PRs and reviews are cross-linked (`#123` mentions, PR merge commits), so retrieving one pulls in the others that explain it.
@@ -56,6 +59,8 @@ Code shows *what* exists; the reason it exists is in the history around it (comm
 
 ## Honest answers to hard questions
 - *"Does history really help?"* On this dataset, for capable models, yes and by a large margin; but the repository is fictional and the sample small, so we claim it is promising, not proven.
-- *"Isn't the test biased towards history?"* Yes, partly by construction; that is why a real, independently written repository is the first next step.
+- *"Isn't the test biased towards history?"* On the demo repository, yes, by construction. That is why we ran a held-out test on a real repository whose history we did not write. Some bias remains because we drafted the questions from its threads (script-checked, one independent review found 2 weak items out of 35; we did not edit them and report results with and without).
+- *"What went wrong on the real repository?"* Retrieval missed on some phrasings (recall 0.70, not 1.00; for "why was 1.0.0 removed from PyPI" it fetched unrelated issues and both models invented a reason). And the refusal gate for unanswerable questions did not transfer: codellama invented a customer name for "who was the first paying customer" because the question is topically close to the repo. Only the model itself abstained for llama2.
+- *"Did you cherry-pick or change the test?"* No. The 35 questions were committed before the run (commit 50bdc9e); a first run crashed (Docker stopped) and was rerun unchanged; a review after the freeze led to errata, not edits.
 - *"Why trust your scoring?"* We do not fully yet: it is automatic substring matching; human grading and kappa are planned and the grading sheet is ready.
-- *"What is not done?"* The held-out run, human grading, and a real-repository question set.
+- *"What is not done?"* Human grading (the 36-row blind sheet is ready, agreement with the automatic score is unmeasured), a second human check of the gold answers, a second real repository, and fixing the two weaknesses above.
