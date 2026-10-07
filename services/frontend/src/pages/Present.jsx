@@ -107,6 +107,28 @@ function SlideArchitecture() {
   )
 }
 
+function SlideGit() {
+  const items = [
+    ['Git (git_ops.py)', 'Clones the repository and reads the commit log with the git command line. The token is sent as an auth header and scrubbed from logs and errors.'],
+    ['GitHub API (github_api.py)', 'Reads issues, pull requests, comments, review comments and review states. Pages through results, waits out the rate limit, uses GITHUB_TOKEN if set.'],
+    ['Parsers (parsers.py)', 'Chunks code by function and class (60-line windows, 10 overlap, for other files) and turns commits, issues and PRs into citable chunks.'],
+    ['Link graph', 'Links issue, pull request and commit, and keeps who wrote each one. This history is what code_history mode adds. Stored in SQLite.'],
+  ]
+  return (
+    <div>
+      <Title eyebrow="Git and GitHub" sub={"All git and GitHub work happens in the ingest service. It only reads: it never pushes code, opens pull requests or comments."}>
+        Git services: the ingest service
+      </Title>
+      <div className="grid gap-4 md:grid-cols-2">
+        {items.map(([t, d]) => (
+          <div key={t} className="panel"><div className="text-xl font-semibold" style={{ color: 'var(--accent)' }}>{t}</div><p className="mt-1 text-lg">{d}</p></div>
+        ))}
+      </div>
+      <p className="mt-6 text-lg muted">GitHub is also used for CI: GitHub Actions runs lint, tests and the build on every push. The repository is IATESPAGHETTI/Code_Origin.</p>
+    </div>
+  )
+}
+
 function SlideFlow() {
   const steps = [
     ['Safety', 'G10'], ['Retrieve', 'G8'], ['On topic?', 'G1'], ['Enough history?', 'G2'],
@@ -572,7 +594,7 @@ function SlideEnd() {
 
 const SLIDES = [
   ['Title', SlideTitle], ['Problem', SlideProblem], ['Research design', SlideResearch], ['Methodology', SlideMethod],
-  ['Architecture', SlideArchitecture], ['Question flow', SlideFlow], ['DevOps', SlideDevOps], ['CI/CD', SlideCI], ['CI/CD runs', SlideRuns], ['Prometheus', SlidePrometheus], ['Grafana findings', SlideFindings], ['Grafana: evaluation', SlideGrafanaEval], ['Grafana: quality', SlideGrafanaQuality], ['Grafana: tokens', SlideGrafanaTokens], ['Grafana: live', SlideGrafanaLive],
+  ['Architecture', SlideArchitecture], ['Git services', SlideGit], ['Question flow', SlideFlow], ['DevOps', SlideDevOps], ['CI/CD', SlideCI], ['CI/CD runs', SlideRuns], ['Prometheus', SlidePrometheus], ['Grafana findings', SlideFindings], ['Grafana: evaluation', SlideGrafanaEval], ['Grafana: quality', SlideGrafanaQuality], ['Grafana: tokens', SlideGrafanaTokens], ['Grafana: live', SlideGrafanaLive],
   ['Results', SlideResults], ['Interpretation', SlideInterpretation], ['Which model?', SlideTasks], ['Failure analysis', SlideFailures],
   ['Live system', SlideHealth], ['Questions', SlideEnd],
 ]
