@@ -1,0 +1,14 @@
+\multicolumn{3}{@{}l}{\emph{CodeOrigin (history gain on 24 held-out history questions; llama2 / codellama / starcoder2)}} \\
+Remove history from retrieval & code only $\rightarrow$ code + history & +0.32 / +0.28 / $-$0.02 \\
+Remove all retrieval & no context $\rightarrow$ code + history & +0.57 / +0.55 / +0.11 \\
+Replace retrieval with gold evidence & code + history $\rightarrow$ oracle & +0.01 / +0.14 / +0.01 \\
+Change repository & held-out $\rightarrow$ fictional demo (run 5) & +0.42 / +0.42 / +0.08 \\
+Change the scorer & key facts $\rightarrow$ DeepSeek judge & +0.35 / +0.35 / +0.06 \\
+Drop 2 weak questions & 24 $\rightarrow$ 22 questions & +0.33 / +0.27 / $-$0.02 \\
+\midrule
+\multicolumn{3}{@{}l}{\emph{ChangeGuard (5 retrieval questions; 4 test-generation tasks)}} \\
+Chunking & fixed 800 chars $\rightarrow$ AST/structure & P@5 1.00 $\rightarrow$ 0.90; context 722 $\rightarrow$ 350 chars \\
+Metadata filter & all files $\rightarrow$ source code only & P@5 0.90 $\rightarrow$ 0.60 \\
+Test prompt context (DeepSeek) & no example test $\rightarrow$ retrieved test file & meaningful passes 0/4 $\rightarrow$ 3/4 \\
+Code extraction before pytest & raw reply $\rightarrow$ extracted code & local passes 0/12 $\rightarrow$ 1/12 (meaningful 0/12) \\
+\bottomrule
