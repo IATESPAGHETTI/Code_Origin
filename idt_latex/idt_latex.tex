@@ -6,6 +6,11 @@
 \usepackage{amssymb}
 \usepackage{array}
 \graphicspath{{figures/}}
+% Generated table rows are read with TeX's primitive \input, which is expandable,
+% so a table file may start with \multicolumn or end with a rule.
+\makeatletter
+\newcommand{\tablerows}[1]{\@@input #1 }
+\makeatother
 
 \begin{document}
 
@@ -24,7 +29,7 @@ Developers reviewing a change often need to know why the code is the way it is, 
 Code review, Large language models, Mining software repositories, Pre-registered evaluation, Retrieval-augmented generation, Software maintenance
 \end{IEEEkeywords}
 
-\noindent\textbf{Overleaf Project Link:} \url{https://www.overleaf.com/project/REPLACE-WITH-YOUR-PROJECT-ID}
+\noindent\textbf{Overleaf Project Link:} \url{https://www.overleaf.com/project/YOUR-PROJECT-ID}
 
 % =====================================================================
 \section{Introduction}
@@ -80,12 +85,12 @@ Table~\ref{tab:related} compares eight works most relevant to ours. Three gaps a
 \centering
 \scriptsize
 \setlength{\tabcolsep}{3pt}
-\begin{tabular}{@{}p{0.9cm}p{1.6cm}p{1.9cm}p{1.7cm}p{1.3cm}p{2.2cm}p{2.0cm}p{1.6cm}@{}}
+\begin{tabular}{@{}p{0.9cm}p{1.6cm}p{1.9cm}p{1.7cm}p{1.3cm}p{2.2cm}p{1.9cm}p{1.6cm}@{}}
 \toprule
 Work & Problem & Method & Dataset & Metrics & Key result & Limitation & Relevance \\
 \midrule
 \cite{lewis2020rag} & Knowledge-intensive QA & Dense retriever + generator & Open-domain QA sets & Exact match & Retrieval improves factual answers & Wikipedia text, no code & Base RAG pattern \\
-\cite{zhang2023repocoder} & Code completion & Iterative repository retrieval & RepoEval & Exact/edit match & Repository context helps completion & Current code only, no history & Code-only baseline idea \\
+\cite{zhang2023repocoder} & Code completion & Iterative repository retrieval & RepoEval & Exact and edit match & Repository context helps completion & Current code only, no history & Code-only baseline idea \\
 \cite{jimenez2024swebench} & Resolving GitHub issues & Benchmark from real issues and PRs & 2{,}294 tasks, 12 repos & Tests resolved & Models resolve few real issues & History as task, not as evidence & Real-repository setting \\
 \cite{tian2022commit} & Commit message quality & Empirical study & Open-source commits & Expert labels & Good messages state what and why & No QA system & Why history holds rationale \\
 \cite{li2022codereviewer} & Automating review & Pre-trained review model & Review data, 9 languages & BLEU, accuracy & Better review comments & Diff only, no history & Review-assistant baseline \\
@@ -276,13 +281,12 @@ Table~\ref{tab:heldout} gives the headline result on the held-out repository and
 \label{tab:heldout}
 \centering
 \scriptsize
-\setlength{\tabcolsep}{3.5pt}
+\setlength{\tabcolsep}{2.5pt}
 \begin{tabular}{@{}lccccccccc@{}}
 \toprule
 Model & No context & Code only & Code + history & Oracle & $\Delta$ [95\% CI] & $p$ & $d_z$ & Verdict \\
 \midrule
-\input{tables/heldout.tex}
-\bottomrule
+\tablerows{tables/heldout.tex}
 \end{tabular}\\[2pt]
 \parbox{\linewidth}{\footnotesize $^{\dagger}$Run 10: per-mode means are question-weighted from stored category means; interval and $d_z$ from the run report.}
 \end{table}
@@ -305,8 +309,7 @@ The oracle column explains the mechanism. When llama2 is handed the gold evidenc
 \toprule
 Mode & Evidence recall & Evidence precision \\
 \midrule
-\input{tables/retrieval.tex}
-\bottomrule
+\tablerows{tables/retrieval.tex}
 \end{tabular}
 \end{table}
 
@@ -332,8 +335,7 @@ Fig.~\ref{fig:effect} places the held-out result next to the fictional demo repo
 Model & Correct & Halluc. & Unsupported & Citation & Median & Retrieval & Ignored & Hallu- & Under- \\
  & (answerable) & rate & ratio & validity & latency (s) & miss & evidence & cinated & refused \\
 \midrule
-\input{tables/quality.tex}
-\bottomrule
+\tablerows{tables/quality.tex}
 \end{tabular}
 \end{table}
 
@@ -352,8 +354,7 @@ Table~\ref{tab:cg} and Fig.~\ref{fig:cg} report the ChangeGuard comparison. Retr
 \cmidrule(lr){4-6}\cmidrule(lr){7-9}
 Category & $n$ & P@5 & L & C & S & L & C & S \\
 \midrule
-\input{tables/changeguard.tex}
-\bottomrule
+\tablerows{tables/changeguard.tex}
 \end{tabular}
 \end{table}
 
@@ -371,14 +372,13 @@ Table~\ref{tab:cgcost} turns to reliability and cost. The fabricated-reference d
 \label{tab:cgcost}
 \centering
 \scriptsize
-\setlength{\tabcolsep}{3pt}
+\setlength{\tabcolsep}{2.4pt}
 \begin{tabular}{@{}lcccccccccc@{}}
 \toprule
 Model & Fabricated & Answers & Median & p95 & Tokens/s & CPU & Memory & Tests pass & Pass after & Meaningful \\
  & refs & affected & latency (s) & latency (s) & & & (GiB) & (raw) & extraction & pass \\
 \midrule
-\input{tables/changeguard_cost.tex}
-\bottomrule
+\tablerows{tables/changeguard_cost.tex}
 \end{tabular}
 \end{table}
 
@@ -402,8 +402,7 @@ Table~\ref{tab:ablation} changes one component at a time. For CodeOrigin, removi
 \toprule
 Component & Change & Effect \\
 \midrule
-\input{tables/ablation.tex}
-\bottomrule
+\tablerows{tables/ablation.tex}
 \end{tabular}
 \end{table}
 

@@ -13,7 +13,9 @@ TT = {"llama2": "llama2", "codellama:7b": "codellama:7b", "starcoder2:3b": "star
 
 def w(name, rows):
     with open(os.path.join(OUT, name), "w", encoding="utf-8") as fh:
-        fh.write("\n".join(rows) + "\n")
+        # \bottomrule must sit in the same file as the last row: after \input returns, the
+        # tabular has already started a new cell and \bottomrule would be a misplaced \noalign.
+        fh.write("\n".join(rows) + "\n\\bottomrule\n")
 
 
 def f2(x):
